@@ -1,5 +1,5 @@
-from flask import Flask, make_response
-from flask_restful import Api, Resource, reqparse
+from flask import Flask, make_response, request
+from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 import jwt
@@ -8,37 +8,45 @@ import datetime
 
 # Setup App
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "secretKey"
-api = Api(app)
 db = SQL("sqlite:///database.db")
 
+app.config["SECRET_KEY"] = "secretKey"
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.form.get("access-token")
+
+        if not token:
+            return make_response({"message": "Access token is not provided"}, 403)
+
+        try:
+            data = jwt.decode(
+                token, app.config["SECRET_KEY"], algorithms=["HS256"])
+        except:
+            return make_response({"message": "Access token is invalid"}, 403)
+
+        return f(*args, **kwargs)
+    return decorated
+
+
 # Register API
-user_register_args = reqparse.RequestParser()
-user_register_args.add_argument(
-    "username", type=str, help="Username is missing", required=True)
-user_register_args.add_argument(
-    "password", type=str, help="Password is missing", required=True)
-user_register_args.add_argument(
-    "confPassword", type=str, help="Passowrd confirm is missing", required=True)
-user_register_args.add_argument(
-    "email", type=str, help="Email is missing", required=True)
+@app.route("/register", methods=["POST"])
+def register():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    email = request.form.get("email")
+    findUser = db.execute(
+        "SELECT * FROM users WHERE email = ?", email)
+    if len(findUser) != 0:
+        return make_response({"message": "Email already in use"}, 409)
+    userID = db.execute("INSERT INTO users (username, password, email) VALUES(?, ?, ?)",
+                        username, generate_password_hash(password), email)
+    token = jwt.encode({"userID": userID, "exp": datetime.datetime.utcnow(
+    ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
+    return make_response({"access-token": token, "userID": userID}, 201)
 
-
-class Register(Resource):
-    def post(self):
-        args = user_register_args.parse_args()
-        findUser = db.execute(
-            "SELECT * FROM users WHERE email = ?", args.email)
-        if len(findUser) != 0:
-            return make_response({"message": "Email already in use"}, 409)
-        userID = db.execute("INSERT INTO users (username, password, email) VALUES(?, ?, ?)",
-                            args.username, generate_password_hash(args.password), args.email)
-        token = jwt.encode({"user": args.username, "exp": datetime.datetime.utcnow(
-        ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
-        return make_response({"accessToken": token, "userID": userID}, 201)
-
-
-api.add_resource(Register, "/register")
 
 if __name__ == "__main__":
     app.run(debug=True)
