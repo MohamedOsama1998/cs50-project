@@ -11,8 +11,8 @@ const Register = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Grid item xs={5} md={4} xl={5}>
-        <Paper elevation={2} className="form">
+      <Grid item xs={5} md={3} xl={5}>
+        <Paper elevation={1} className="form">
           <LoginForm />
         </Paper>
       </Grid>

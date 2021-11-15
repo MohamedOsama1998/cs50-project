@@ -1,8 +1,9 @@
 import { useState } from "react";
-
-import { TextField, Button } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { TextField } from "@mui/material";
 
 const RegisterForm = () => {
+  const [isLoading, toggleLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,9 +31,17 @@ const RegisterForm = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button type="submit" size="large">
+      <LoadingButton
+        type="submit"
+        loading={isLoading}
+        variant="outlined"
+        size="large"
+        style={{
+          marginTop: "20px",
+        }}
+      >
         Login
-      </Button>
+      </LoadingButton>
     </form>
   );
 };

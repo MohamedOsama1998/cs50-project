@@ -6,9 +6,14 @@ import {
   Box,
   Button,
 } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import DarkModeContext from "../contexts/DarkModeContext";
 
 const Header = () => {
+  const { darkMode, toggleDarkmode } = useContext(DarkModeContext);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -33,6 +38,12 @@ const Header = () => {
               Login
             </Link>
           </Button>
+          <IconButton
+            color="inherit"
+            onClick={(e) => toggleDarkmode(!darkMode)}
+          >
+            {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
         </Toolbar>
       </AppBar>
     </Box>

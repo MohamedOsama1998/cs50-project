@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
-import { TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const RegisterForm = () => {
+  const [isLoading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,7 +55,17 @@ const RegisterForm = () => {
         value={confPassword}
         onChange={(e) => setConfPassword(e.target.value)}
       ></TextField>
-      <Button type="submit">Register</Button>
+      <LoadingButton
+        type="submit"
+        loading={isLoading}
+        variant="outlined"
+        size="large"
+        style={{
+          marginTop: "20px",
+        }}
+      >
+        Register
+      </LoadingButton>
     </form>
   );
 };
