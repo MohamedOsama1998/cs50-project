@@ -2,6 +2,7 @@ import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Axios from "axios";
 
 const LoginForm = () => {
   const initialValues = {
@@ -18,9 +19,23 @@ const LoginForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    console.log(values);
-
-    actions.setSubmitting(false);
+    let bodyFormData = new FormData();
+    bodyFormData.append("email", values.email);
+    bodyFormData.append("password", values.password);
+    Axios({
+      method: "POST",
+      url: "/login",
+      data: bodyFormData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((res) => {
+        console.log(res.data["access-token"]);
+        actions.setSubmitting(false);
+      })
+      .catch((err) => {
+        console.log(err.body);
+        actions.setSubmitting(false);
+      });
   };
 
   return (

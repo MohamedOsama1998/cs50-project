@@ -2,13 +2,15 @@ import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Axios from "axios";
+import axios from "axios";
 
 const RegisterForm = () => {
   const initialValues = {
-    username: "",
-    email: "",
-    password: "",
-    confPassword: "",
+    username: "test",
+    email: "test@test.com",
+    password: "testtest",
+    confPassword: "testtest",
   };
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("Please enter a username"),
@@ -24,9 +26,25 @@ const RegisterForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    console.log(values);
-
-    actions.setSubmitting(false);
+    let bodyFormData = new FormData();
+    bodyFormData.append("username", values.username);
+    bodyFormData.append("email", values.email);
+    bodyFormData.append("password", values.password);
+    bodyFormData.append("confPassword", values.confPassword);
+    Axios({
+      method: "POST",
+      url: "/register",
+      data: bodyFormData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then((res) => {
+        console.log(res);
+        actions.setSubmitting(false);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        actions.setSubmitting(false);
+      });
   };
 
   return (
