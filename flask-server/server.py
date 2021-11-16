@@ -47,6 +47,25 @@ def register():
     ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
     return make_response({"access-token": token, "userID": userID}, 201)
 
+# Login API
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    password = request.form.get("password")
+    email = request.form.get("email")
+    findUser = db.execute(
+        "SELECT * FROM users WHERE email = ?", email)
+    if len(findUser) == 0:
+        return make_response({"message": "Email not found"}, 404)
+    userHash = findUser[0]["password"]
+    userID = findUser[0]["id"]
+    if check_password_hash(userHash, password):
+        token = jwt.encode({"userID": userID, "exp": datetime.datetime.utcnow(
+        ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
+        return make_response({"access-token": token, "userID": userID}, 200)
+    return make_response({"message": "Password is incorrect"}, 409)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
