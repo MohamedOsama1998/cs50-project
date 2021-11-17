@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, redirect
 from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
@@ -16,10 +16,10 @@ app.config["SECRET_KEY"] = "secretKey"
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.form.get("access-token")
+        token = request.cookies.get("accessToken")
 
         if not token:
-            return make_response({"message": "Access token is not provided"}, 403)
+            return make_response({"message": "You are not allowed to visit this page"}, 403)
 
         try:
             data = jwt.decode(
@@ -40,12 +40,16 @@ def register():
     findUser = db.execute(
         "SELECT * FROM users WHERE email = ?", email)
     if len(findUser) != 0:
-        return make_response({"message": "Email already in use"}, 409)
+        return make_response({"message": "This E-mail is already in use"}, 409)
     userID = db.execute("INSERT INTO users (username, password, email) VALUES(?, ?, ?)",
                         username, generate_password_hash(password), email)
-    token = jwt.encode({"userID": userID, "exp": datetime.datetime.utcnow(
+    token = jwt.encode({"userID": userID, "email": email, "username": username, "exp": datetime.datetime.utcnow(
     ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
-    return make_response({"access-token": token, "userID": userID}, 201)
+    res = make_response({"userID": userID,
+                         "username": username, "email": email}, 201)
+    res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
+    ) + datetime.timedelta(days=1))
+    return res
 
 # Login API
 
@@ -57,14 +61,19 @@ def login():
     findUser = db.execute(
         "SELECT * FROM users WHERE email = ?", email)
     if len(findUser) == 0:
-        return make_response({"message": "Email not found"}, 404)
+        return make_response({"message": "Incorrect email or password"}, 404)
     userHash = findUser[0]["password"]
     userID = findUser[0]["id"]
+    username = findUser[0]["username"]
     if check_password_hash(userHash, password):
-        token = jwt.encode({"userID": userID, "exp": datetime.datetime.utcnow(
+        token = jwt.encode({"userID": userID, "email": email, "username": username, "exp": datetime.datetime.utcnow(
         ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
-        return make_response({"access-token": token, "userID": userID}, 200)
-    return make_response({"message": "Password is incorrect"}, 409)
+        res = make_response({"userID": userID,
+                            "username": username, "email": email}, 201)
+        res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
+        ) + datetime.timedelta(days=1))
+        return res
+    return make_response({"message": "Incorrect email or password"}, 409)
 
 
 if __name__ == "__main__":
