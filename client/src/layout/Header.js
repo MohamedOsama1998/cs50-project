@@ -13,7 +13,7 @@ import { toggleDarkmode } from "../redux/actions/themeAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-  const isDarkmode = useSelector((state) => state.themeReducer.isDarkmode);
+  const isDarkmode = useSelector((state) => state.theme.isDarkmode);
   const themeDispatch = useDispatch();
 
   return (

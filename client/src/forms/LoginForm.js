@@ -1,13 +1,18 @@
 import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { getFormData } from "../helpers";
+import { useDispatch } from "react-redux";
+import { authUser } from "../redux/actions/userActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Axios from "axios";
 
 const LoginForm = () => {
+  const userDispatch = useDispatch();
+
   const initialValues = {
-    email: "",
-    password: "",
+    email: "test@test.com",
+    password: "testtest",
   };
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -19,21 +24,19 @@ const LoginForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    let bodyFormData = new FormData();
-    bodyFormData.append("email", values.email);
-    bodyFormData.append("password", values.password);
     Axios({
       method: "POST",
       url: "/login",
-      data: bodyFormData,
+      data: getFormData(values),
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
+        userDispatch(authUser(res.data));
         actions.setSubmitting(false);
       })
       .catch((err) => {
-        console.log(err.body);
+        console.log(err.response.data.message);
         actions.setSubmitting(false);
       });
   };
