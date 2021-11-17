@@ -42,7 +42,7 @@ const RegisterForm = () => {
     })
       .then((res) => {
         userDispatch(authUser(res.data));
-        navigate("/", { replace: true });
+        navigate("/tasks", { replace: true });
         actions.setSubmitting(false);
       })
       .catch((err) => {
