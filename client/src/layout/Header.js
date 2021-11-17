@@ -9,11 +9,13 @@ import {
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import DarkModeContext from "../contexts/DarkModeContext";
+import { toggleDarkmode } from "../redux/actions/themeAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-  const { darkMode, toggleDarkmode } = useContext(DarkModeContext);
+  const isDarkmode = useSelector((state) => state.themeReducer.isDarkmode);
+  const themeDispatch = useDispatch();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -40,9 +42,11 @@ const Header = () => {
           </Button>
           <IconButton
             color="inherit"
-            onClick={(e) => toggleDarkmode(!darkMode)}
+            onClick={() => {
+              themeDispatch(toggleDarkmode(isDarkmode));
+            }}
           >
-            {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            {isDarkmode ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
         </Toolbar>
       </AppBar>

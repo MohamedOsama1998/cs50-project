@@ -29,7 +29,7 @@ const LoginForm = () => {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        console.log(res.data["access-token"]);
+        console.log(res);
         actions.setSubmitting(false);
       })
       .catch((err) => {
