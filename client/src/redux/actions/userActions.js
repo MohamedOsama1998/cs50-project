@@ -6,3 +6,9 @@ export const authUser = (payload) => {
     payload: payload,
   };
 };
+
+export const logOutUser = () => {
+  return {
+    type: actions.LOGOUT_USER,
+  };
+};

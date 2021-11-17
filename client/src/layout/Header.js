@@ -1,19 +1,14 @@
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Box,
-  Button,
-} from "@mui/material";
+import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { Link } from "react-router-dom";
 import { toggleDarkmode } from "../redux/actions/themeAction";
 import { useDispatch, useSelector } from "react-redux";
+import SignedOutLinks from "../links/SignedOutLinks";
+import SignedInLinks from "../links/SignedInLinks";
 
 const Header = () => {
   const isDarkmode = useSelector((state) => state.theme.isDarkmode);
+  const isAuth = useSelector((state) => state.auth.isAuth);
   const themeDispatch = useDispatch();
 
   return (
@@ -30,16 +25,7 @@ const Header = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             SOLO
           </Typography>
-          <Button color="inherit">
-            <Link to="/register" className="link">
-              Register
-            </Link>
-          </Button>
-          <Button color="inherit">
-            <Link to="/login" className="link">
-              Login
-            </Link>
-          </Button>
+          {isAuth ? <SignedInLinks /> : <SignedOutLinks />}
           <IconButton
             color="inherit"
             onClick={() => {

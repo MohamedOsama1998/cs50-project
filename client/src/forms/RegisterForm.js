@@ -3,13 +3,14 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { getFormData } from "../helpers";
 import { useDispatch } from "react-redux";
 import { authUser } from "../redux/actions/userActions";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Axios from "axios";
 
 const RegisterForm = () => {
   const userDispatch = useDispatch();
-
+  const navigate = useNavigate();
   const initialValues = {
     username: "test",
     email: "test@test.com",
@@ -37,12 +38,12 @@ const RegisterForm = () => {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        console.log(res.data);
         userDispatch(authUser(res.data));
+        navigate("/", { replace: true });
         actions.setSubmitting(false);
       })
       .catch((err) => {
-        console.log(err.response.data.message);
+        console.log(err.response);
         actions.setSubmitting(false);
       });
   };

@@ -3,13 +3,14 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { getFormData } from "../helpers";
 import { useDispatch } from "react-redux";
 import { authUser } from "../redux/actions/userActions";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Axios from "axios";
 
 const LoginForm = () => {
   const userDispatch = useDispatch();
-
+  const navigate = useNavigate();
   const initialValues = {
     email: "test@test.com",
     password: "testtest",
@@ -28,11 +29,12 @@ const LoginForm = () => {
       method: "POST",
       url: "/login",
       data: getFormData(values),
+
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        console.log(res.data);
         userDispatch(authUser(res.data));
+        navigate("/", { replace: true });
         actions.setSubmitting(false);
       })
       .catch((err) => {
