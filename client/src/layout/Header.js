@@ -1,4 +1,5 @@
 import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
+import { Link } from "react-router-dom";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { toggleDarkmode } from "../redux/actions/themeAction";
@@ -21,10 +22,16 @@ const Header = () => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-          ></IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            SOLO
-          </Typography>
+          >
+            <Link to="/" className="link">
+              SOLO
+            </Link>
+          </IconButton>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+          ></Typography>
           {isAuth ? <SignedInLinks /> : <SignedOutLinks />}
           <IconButton
             color="inherit"

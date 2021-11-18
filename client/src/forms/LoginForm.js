@@ -77,8 +77,14 @@ const LoginForm = () => {
               required
               fullWidth
               value={values.email}
-              error={errors.email && touched.email ? true : false}
-              helperText={<ErrorMessage name="email" />}
+              error={
+                errors.email && touched.email && values.email !== ""
+                  ? true
+                  : false
+              }
+              helperText={
+                values.email !== "" ? <ErrorMessage name="email" /> : null
+              }
             />
             <Field
               disabled={isSubmitting}
@@ -91,8 +97,14 @@ const LoginForm = () => {
               required
               fullWidth
               value={values.password}
-              error={errors.password && touched.password ? true : false}
-              helperText={<ErrorMessage name="password" />}
+              error={
+                errors.password && touched.password && values.password !== ""
+                  ? true
+                  : false
+              }
+              helperText={
+                values.password !== "" ? <ErrorMessage name="password" /> : null
+              }
             />
             <LoadingButton
               type="submit"

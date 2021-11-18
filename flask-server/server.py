@@ -30,8 +30,10 @@ def token_required(f):
         return f(*args, **kwargs)
     return decorated
 
-
+# AUTH APIS
 # Register API
+
+
 @app.route("/register", methods=["POST"])
 def register():
     username = request.form.get("username")
@@ -74,6 +76,18 @@ def login():
         ) + datetime.timedelta(days=1))
         return res
     return make_response({"message": "Incorrect email or password"}, 409)
+
+# TASKS APIS
+# Add task:
+
+
+@app.route("/addtask", methods=["PUT"])
+@token_required
+def addTask():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    return {"ID": userID}
 
 
 if __name__ == "__main__":

@@ -82,8 +82,14 @@ const RegisterForm = () => {
               required
               fullWidth
               value={values.username}
-              helperText={<ErrorMessage name="username" />}
-              error={errors.username && touched.username ? true : false}
+              error={
+                errors.username && touched.username && values.username !== ""
+                  ? true
+                  : false
+              }
+              helperText={
+                values.username !== "" ? <ErrorMessage name="username" /> : null
+              }
             ></Field>
             <Field
               disabled={isSubmitting}
@@ -97,8 +103,14 @@ const RegisterForm = () => {
               required
               fullWidth
               value={values.email}
-              error={errors.email && touched.email ? true : false}
-              helperText={<ErrorMessage name="email" />}
+              error={
+                errors.email && touched.email && values.email !== ""
+                  ? true
+                  : false
+              }
+              helperText={
+                values.email !== "" ? <ErrorMessage name="email" /> : null
+              }
             />
             <Field
               disabled={isSubmitting}
@@ -111,8 +123,14 @@ const RegisterForm = () => {
               required
               fullWidth
               value={values.password}
-              error={errors.password && touched.password ? true : false}
-              helperText={<ErrorMessage name="password" />}
+              error={
+                errors.password && touched.password && values.password !== ""
+                  ? true
+                  : false
+              }
+              helperText={
+                values.password !== "" ? <ErrorMessage name="password" /> : null
+              }
             />
             <Field
               disabled={isSubmitting}
@@ -125,8 +143,18 @@ const RegisterForm = () => {
               required
               fullWidth
               value={values.confPassword}
-              error={errors.confPassword && touched.confPassword ? true : false}
-              helperText={<ErrorMessage name="confPassword" />}
+              error={
+                errors.confPassword &&
+                touched.confPassword &&
+                values.confPassword !== ""
+                  ? true
+                  : false
+              }
+              helperText={
+                values.confPassword !== "" ? (
+                  <ErrorMessage name="confPassword" />
+                ) : null
+              }
             />
             <LoadingButton
               type="submit"
