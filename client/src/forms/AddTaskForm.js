@@ -1,11 +1,14 @@
-import { TextField, Alert } from "@mui/material";
+import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { getFormData } from "../helpers";
+import { useDispatch } from "react-redux";
+import { addTask } from "../redux/actions/tasksActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Axios from "axios";
 
 const AddTaskForm = () => {
+  const dispatch = useDispatch();
   const initialValues = {
     title: "",
     text: "",
@@ -24,6 +27,7 @@ const AddTaskForm = () => {
     })
       .then((res) => {
         console.log(res.data);
+        dispatch(addTask(res.data));
         actions.setSubmitting(false);
       })
       .catch((err) => {
