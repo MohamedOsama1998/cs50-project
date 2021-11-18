@@ -18,16 +18,17 @@ const AddTaskForm = () => {
   const onSubmit = (values, actions) => {
     Axios({
       method: "PUT",
-      url: "/addtask",
+      url: "/tasks",
       data: getFormData(values),
-
       headers: { withCredentials: true },
     })
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
+        actions.setSubmitting(false);
       })
       .catch((err) => {
         console.log(err);
+        actions.setSubmitting(false);
       });
   };
 
@@ -45,7 +46,6 @@ const AddTaskForm = () => {
               as={TextField}
               autoComplete="off"
               margin="normal"
-              // variant="standard"
               label="Task title"
               type="text"
               name="title"
@@ -65,7 +65,6 @@ const AddTaskForm = () => {
               disabled={isSubmitting}
               as={TextField}
               margin="normal"
-              // variant="standard"
               label="Task description"
               type="text"
               name="text"

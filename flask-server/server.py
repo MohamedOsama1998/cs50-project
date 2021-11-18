@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 import jwt
 import datetime
-# from time import strftime
+from time import strftime
 
 # Setup App
 app = Flask(__name__)
@@ -81,13 +81,21 @@ def login():
 # Add task:
 
 
-@app.route("/addtask", methods=["PUT"])
+@app.route("/tasks", methods=["PUT"])
 @token_required
 def addTask():
-    token = request.cookies.get("accessToken")
-    userID = jwt.decode(
-        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
-    return {"ID": userID}
+    if request.method == "PUT":
+        title = request.form.get("title")
+        text = request.form.get("title")
+        token = request.cookies.get("accessToken")
+        userID = jwt.decode(
+            token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+        taskID = db.execute("INSERT INTO tasks(userID) VALUES(?)", userID)
+        db.execute("INSERT INTO taskInfo(taskID, title, text, addedOn, modifiedOn, status) VALUES(?, ?, ?, ?, ?, ?)",
+                   taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "PENDING")
+        addedTask = db.execute(
+            "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
+        return make_response(addedTask, 201)
 
 
 if __name__ == "__main__":
