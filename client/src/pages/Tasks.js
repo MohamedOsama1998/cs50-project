@@ -1,8 +1,8 @@
 import { Button, Grid, Modal, Box, Typography } from "@mui/material";
 import Task from "../layout/Task";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasks } from "../redux/actions/tasksActions";
+import { fetchTasks, toggleAddTaskModal } from "../redux/actions/tasksActions";
 import AddTaskForm from "../forms/AddTaskForm";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -19,17 +19,17 @@ const style = {
 };
 
 const Tasks = () => {
-  const tasks = useSelector(({ tasks }) => tasks);
+  const tasks = useSelector(({ tasks }) => tasks.tasks);
+  const modal = useSelector(({ tasks }) => tasks.modal);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);
-  const [isModal, setModal] = useState(false);
   return (
     <>
       <Button
         onClick={() => {
-          setModal(true);
+          dispatch(toggleAddTaskModal(modal));
         }}
         color="success"
         variant="outlined"
@@ -38,9 +38,9 @@ const Tasks = () => {
         Add task
       </Button>
       <Modal
-        open={isModal}
+        open={modal}
         onClose={() => {
-          setModal(false);
+          dispatch(toggleAddTaskModal(modal));
         }}
       >
         <Box sx={style}>

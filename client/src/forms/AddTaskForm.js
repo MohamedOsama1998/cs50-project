@@ -1,13 +1,13 @@
 import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { getFormData } from "../helpers";
-import { useDispatch } from "react-redux";
-import { addTask } from "../redux/actions/tasksActions";
+import { useDispatch, useSelector } from "react-redux";
+import { addTask, toggleAddTaskModal } from "../redux/actions/tasksActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Axios from "axios";
 
 const AddTaskForm = () => {
+  const modal = useSelector(({ tasks }) => tasks.modal);
   const dispatch = useDispatch();
   const initialValues = {
     title: "",
@@ -19,19 +19,10 @@ const AddTaskForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    Axios({
-      method: "PUT",
-      url: "/tasks",
-      data: getFormData(values),
-      headers: { withCredentials: true },
-    })
-      .then((res) => {
-        dispatch(addTask(res.data));
-        actions.setSubmitting(false);
-      })
-      .catch((err) => {
-        actions.setSubmitting(false);
-      });
+    dispatch(addTask(getFormData(values)));
+    dispatch(toggleAddTaskModal(modal));
+    actions.setSubmitting(false);
+    actions.resetForm();
   };
 
   return (

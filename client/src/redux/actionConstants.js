@@ -10,4 +10,5 @@ export const actions = {
   // Tasks actions
   FETCH_TASKS: "FETCH_TASKS",
   ADD_TASK: "ADD_TASK",
+  TOGGLE_ADD_TASK_MODAL: "TOGGLE_ADD_TASK_MODAL",
 };

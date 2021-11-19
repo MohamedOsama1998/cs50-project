@@ -81,7 +81,7 @@ def login():
 # Add task:
 
 
-@app.route("/tasks", methods=["PUT", "GET"])
+@app.route("/tasks", methods=["POST", "GET"])
 @token_required
 def addTask():
     token = request.cookies.get("accessToken")
@@ -91,9 +91,9 @@ def addTask():
         userTasks = db.execute(
             "SELECT * FROM taskInfo WHERE taskID in (SELECT id FROM tasks WHERE userID = ?)", userID)
         return make_response({"tasks": userTasks}, 200)
-    elif request.method == "PUT":
+    elif request.method == "POST":
         title = request.form.get("title")
-        text = request.form.get("title")
+        text = request.form.get("text")
         taskID = db.execute("INSERT INTO tasks(userID) VALUES(?)", userID)
         db.execute("INSERT INTO taskInfo(taskID, title, text, addedOn, modifiedOn, status) VALUES(?, ?, ?, ?, ?, ?)",
                    taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "PENDING")

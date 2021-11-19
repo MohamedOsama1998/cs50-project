@@ -17,9 +17,26 @@ export const fetchTasks = () => (dispatch) => {
     });
 };
 
-export const addTask = (task) => {
+export const addTask = (task) => (dispatch) => {
+  Axios({
+    method: "POST",
+    url: "/tasks",
+    data: task,
+  })
+    .then((res) => {
+      dispatch({
+        type: actions.ADD_TASK,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err.response);
+    });
+};
+
+export const toggleAddTaskModal = (modal) => {
   return {
-    type: actions.ADD_TASK,
-    payload: task,
+    type: actions.TOGGLE_ADD_TASK_MODAL,
+    payload: modal,
   };
 };
