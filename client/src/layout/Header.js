@@ -8,7 +8,7 @@ import SignedOutLinks from "../links/SignedOutLinks";
 import SignedInLinks from "../links/SignedInLinks";
 
 const Header = () => {
-  const isDarkmode = useSelector((state) => state.theme.isDarkmode);
+  const isDarkmode = useSelector(({ theme }) => theme.isDarkmode);
   const isAuth = useSelector((state) => state.auth.isAuth);
   const themeDispatch = useDispatch();
 

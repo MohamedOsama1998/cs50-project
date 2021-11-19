@@ -1,34 +1,25 @@
 import { actions } from "../actionConstants";
-import jwt_decode from "jwt-decode";
-import Cookies from "js-cookie";
 
-const initState = Cookies.get("accessToken")
-  ? {
-      ...jwt_decode(Cookies.get("accessToken")),
-      isAuth: true,
-    }
-  : {
-      username: "",
-      email: "",
-      userID: null,
-      isAuth: false,
-    };
+const initState = {};
 
 export const authReducer = (state = initState, { type, payload }) => {
   switch (type) {
+    case actions.FETCH_USER_FROM_COOKIES:
+      return {
+        ...payload,
+        isAuth: true,
+      };
     case actions.AUTH_USER:
       return {
-        username: payload.username,
-        email: payload.email,
-        userID: payload.userID,
+        ...payload,
         isAuth: true,
       };
     case actions.LOGOUT_USER:
+      return {};
+    case actions.SET_AUTH_ERROR:
       return {
-        username: "",
-        email: "",
-        userID: null,
-        isAuth: false,
+        ...state,
+        authErr: payload,
       };
     default:
       return state;

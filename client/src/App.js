@@ -1,6 +1,9 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchDarkmode } from "./redux/actions/themeAction";
+import { fetchUserFromCookies } from "./redux/actions/userActions";
 import "./styles/App.css";
 
 import Header from "./layout/Header";
@@ -12,10 +15,16 @@ import NotFound from "./pages/NotFound";
 import Tasks from "./pages/Tasks";
 
 const App = () => {
-  const isDarkmode = useSelector((state) => state.theme.isDarkmode);
-  const isAuth = useSelector((state) => state.auth.isAuth);
+  const dispatch = useDispatch();
+  const isDarkmode = useSelector(({ theme }) => theme.isDarkmode);
+  const isAuth = useSelector(({ auth }) => auth.isAuth);
   const darkTheme = createTheme({ palette: { mode: "dark" } });
   const lightTheme = createTheme({ palette: { mode: "light" } });
+
+  useEffect(() => {
+    dispatch(fetchDarkmode());
+    dispatch(fetchUserFromCookies());
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}>

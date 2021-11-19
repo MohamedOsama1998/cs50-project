@@ -1,6 +1,12 @@
 export const actions = {
+  // Theme actions
+  FETCH_DARKMODE: "FETCH_DARKMODE",
   TOGGLE_DARKMODE: "TOGGLE_DARKMODE",
+  // User actions
+  FETCH_USER_FROM_COOKIES: "FETCH_USER_FROM_COOKIES",
   AUTH_USER: "AUTH_USER",
   LOGOUT_USER: "LOGOUT_USER",
+  SET_AUTH_ERROR: "SET_AUTH_ERROR",
+  // Tasks actions
   ADD_TASK: "ADD_TASK",
 };

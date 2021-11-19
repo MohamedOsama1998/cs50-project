@@ -1,23 +1,18 @@
 import { actions } from "../actionConstants";
-import Cookies from "js-cookie";
 
-if (!Cookies.get("isDarkmode")) {
-  Cookies.set("isDarkmode", "false");
-}
+const initState = {};
 
-const initState = {
-  isDarkmode: Cookies.get("isDarkmode") === "true",
-};
-
-export const themeReducer = (state = initState, { type }) => {
-  if (type === actions.TOGGLE_DARKMODE) {
-    let currentTheme = Cookies.get("isDarkmode") === "true";
-    Cookies.remove("isDarkmode");
-    Cookies.set("isDarkmode", !currentTheme);
-    return {
-      isDarkmode: !currentTheme,
-    };
-  } else {
-    return state;
+export const themeReducer = (state = initState, { type, isDarkmode }) => {
+  switch (type) {
+    case actions.FETCH_DARKMODE:
+      return {
+        isDarkmode: isDarkmode,
+      };
+    case actions.TOGGLE_DARKMODE:
+      return {
+        isDarkmode: isDarkmode,
+      };
+    default:
+      return state;
   }
 };

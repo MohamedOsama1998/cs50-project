@@ -1,18 +1,14 @@
 import { TextField, Alert } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { getFormData } from "../helpers";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import { useState } from "react";
-import { authUser } from "../redux/actions/userActions";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, setAuthError } from "../redux/actions/userActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Axios from "axios";
 
 const RegisterForm = () => {
-  const [err, setErr] = useState("");
-  const userDispatch = useDispatch();
-  const navigate = useNavigate();
+  const authErr = useSelector(({ auth }) => auth.authErr);
+  const dispatch = useDispatch();
   const initialValues = {
     username: "",
     email: "",
@@ -33,34 +29,21 @@ const RegisterForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    setErr("");
-    Axios({
-      method: "POST",
-      url: "/register",
-      data: getFormData(values),
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-      .then((res) => {
-        userDispatch(authUser(res.data));
-        navigate("/tasks", { replace: true });
-        actions.setSubmitting(false);
-      })
-      .catch((err) => {
-        setErr(err.response.data.message);
-        actions.setSubmitting(false);
-      });
+    dispatch(setAuthError(""));
+    dispatch(registerUser(getFormData(values)));
+    actions.setSubmitting(false);
   };
 
   return (
     <>
-      {err ? (
+      {authErr ? (
         <Alert
           severity="error"
           onClose={() => {
-            setErr("");
+            dispatch(setAuthError(""));
           }}
         >
-          {err}
+          {authErr}
         </Alert>
       ) : null}
       <Formik
