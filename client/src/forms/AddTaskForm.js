@@ -26,12 +26,10 @@ const AddTaskForm = () => {
       headers: { withCredentials: true },
     })
       .then((res) => {
-        console.log(res.data);
         dispatch(addTask(res.data));
         actions.setSubmitting(false);
       })
       .catch((err) => {
-        console.log(err);
         actions.setSubmitting(false);
       });
   };

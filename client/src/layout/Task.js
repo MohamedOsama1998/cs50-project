@@ -5,16 +5,15 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-const Task = () => {
+const Task = ({ title, text }) => {
   return (
     <Card style={{ marginTop: "15px", marginBottom: "15px" }}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          Task title
+          {title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+          {text}
         </Typography>
       </CardContent>
       <CardActions>

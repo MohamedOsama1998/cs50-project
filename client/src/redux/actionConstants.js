@@ -8,5 +8,6 @@ export const actions = {
   LOGOUT_USER: "LOGOUT_USER",
   SET_AUTH_ERROR: "SET_AUTH_ERROR",
   // Tasks actions
+  FETCH_TASKS: "FETCH_TASKS",
   ADD_TASK: "ADD_TASK",
 };

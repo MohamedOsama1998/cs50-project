@@ -1,6 +1,8 @@
 import { Button, Grid, Modal, Box, Typography } from "@mui/material";
 import Task from "../layout/Task";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTasks } from "../redux/actions/tasksActions";
 import AddTaskForm from "../forms/AddTaskForm";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -17,6 +19,11 @@ const style = {
 };
 
 const Tasks = () => {
+  const tasks = useSelector(({ tasks }) => tasks);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
   const [isModal, setModal] = useState(false);
   return (
     <>
@@ -59,8 +66,11 @@ const Tasks = () => {
       >
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h4">Pending tasks</Typography>
-          <Task />
-          <Task />
+          {tasks.map((task) =>
+            task.status === "PENDING" ? (
+              <Task title={task.title} text={task.text} key={task.taskID} />
+            ) : null
+          )}
         </Grid>
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h4">In progress</Typography>

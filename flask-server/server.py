@@ -81,15 +81,19 @@ def login():
 # Add task:
 
 
-@app.route("/tasks", methods=["PUT"])
+@app.route("/tasks", methods=["PUT", "GET"])
 @token_required
 def addTask():
-    if request.method == "PUT":
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    if request.method == "GET":
+        userTasks = db.execute(
+            "SELECT * FROM taskInfo WHERE taskID in (SELECT id FROM tasks WHERE userID = ?)", userID)
+        return make_response({"tasks": userTasks}, 200)
+    elif request.method == "PUT":
         title = request.form.get("title")
         text = request.form.get("title")
-        token = request.cookies.get("accessToken")
-        userID = jwt.decode(
-            token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
         taskID = db.execute("INSERT INTO tasks(userID) VALUES(?)", userID)
         db.execute("INSERT INTO taskInfo(taskID, title, text, addedOn, modifiedOn, status) VALUES(?, ?, ?, ?, ?, ?)",
                    taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "PENDING")
