@@ -1,61 +1,19 @@
-import { Button, Grid, Modal, Box, Typography } from "@mui/material";
-import Task from "../layout/Task";
+import { Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasks, toggleAddTaskModal } from "../redux/actions/tasksActions";
-import AddTaskForm from "../forms/AddTaskForm";
-import AddIcon from "@mui/icons-material/Add";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import { fetchTasks } from "../redux/actions/tasksActions";
+import Task from "../layout/Task";
+import AddTaskModal from "../layout/AddTaskModal";
 
 const Tasks = () => {
   const tasks = useSelector(({ tasks }) => tasks.tasks);
-  const modal = useSelector(({ tasks }) => tasks.modal);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);
   return (
     <>
-      <Button
-        onClick={() => {
-          dispatch(toggleAddTaskModal(modal));
-        }}
-        color="success"
-        variant="outlined"
-      >
-        <AddIcon />
-        Add task
-      </Button>
-      <Modal
-        open={modal}
-        onClose={() => {
-          dispatch(toggleAddTaskModal(modal));
-        }}
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Add task:
-          </Typography>
-          <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            component={"div"}
-          >
-            <AddTaskForm />
-          </Typography>
-        </Box>
-      </Modal>
+      <AddTaskModal />
       <Grid
         columns={{ xs: 7, md: 13, xl: 14 }}
         container
@@ -68,7 +26,14 @@ const Tasks = () => {
           <Typography variant="h4">Pending tasks</Typography>
           {tasks.map((task) =>
             task.status === "PENDING" ? (
-              <Task title={task.title} text={task.text} key={task.taskID} />
+              <Task
+                title={task.title}
+                text={task.text}
+                status={task.status}
+                addedOn={tasks.addedOn}
+                taskID={task.taskID}
+                key={task.taskID}
+              />
             ) : null
           )}
         </Grid>

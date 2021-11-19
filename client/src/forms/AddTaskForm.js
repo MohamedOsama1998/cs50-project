@@ -1,6 +1,5 @@
 import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { getFormData } from "../helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, toggleAddTaskModal } from "../redux/actions/tasksActions";
 import * as Yup from "yup";
@@ -19,7 +18,7 @@ const AddTaskForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(addTask(getFormData(values)));
+    dispatch(addTask(values));
     dispatch(toggleAddTaskModal(modal));
     actions.setSubmitting(false);
     actions.resetForm();

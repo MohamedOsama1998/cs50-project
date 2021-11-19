@@ -1,5 +1,6 @@
 import { actions } from "../actionConstants";
 import Axios from "axios";
+import { getFormData } from "../../helpers";
 
 export const fetchTasks = () => (dispatch) => {
   Axios({
@@ -21,7 +22,7 @@ export const addTask = (task) => (dispatch) => {
   Axios({
     method: "POST",
     url: "/tasks",
-    data: task,
+    data: getFormData(task),
   })
     .then((res) => {
       dispatch({
@@ -39,4 +40,21 @@ export const toggleAddTaskModal = (modal) => {
     type: actions.TOGGLE_ADD_TASK_MODAL,
     payload: modal,
   };
+};
+
+export const deleteTask = (taskID) => (dispatch) => {
+  Axios({
+    method: "DELETE",
+    url: "/tasks",
+    data: getFormData({ taskID: taskID }),
+  })
+    .then(() => {
+      dispatch({
+        type: actions.DELETE_TASK,
+        payload: taskID,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };

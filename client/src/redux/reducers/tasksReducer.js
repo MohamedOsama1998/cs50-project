@@ -19,6 +19,11 @@ export const tasksReducer = (state = initState, { type, payload }) => {
         ...state,
         modal: !payload,
       };
+    case actions.DELETE_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.taskID !== payload),
+      };
     default:
       return state;
   }

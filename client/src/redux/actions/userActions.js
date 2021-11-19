@@ -1,4 +1,5 @@
 import { actions } from "../actionConstants";
+import { getFormData } from "../../helpers";
 import Axios from "axios";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -17,7 +18,7 @@ export const registerUser = (payload) => (dispatch) => {
   Axios({
     method: "POST",
     url: "/register",
-    data: payload,
+    data: getFormData(payload),
     headers: { "Content-Type": "multipart/form-data" },
   })
     .then((res) => {
@@ -38,7 +39,7 @@ export const loginUser = (payload) => (dispatch) => {
   Axios({
     method: "POST",
     url: "/login",
-    data: payload,
+    data: getFormData(payload),
     headers: { "Content-Type": "multipart/form-data" },
   })
     .then((res) => {
