@@ -109,8 +109,8 @@ def addTask():
         taskID = request.form.get("taskID")
         status = request.form.get("status")
         db.execute(
-            "UPDATE taskInfo SET status = ? WHERE taskID = ?", status, taskID)
-        return make_response({}, 204)
+            "UPDATE taskInfo SET status = ?, modifiedOn = ? WHERE taskID = ?", status, strftime('%Y-%m-%d %H:%M:%S'), taskID)
+        return make_response({"modifiedOn": strftime('%Y-%m-%d %H:%M:%S'), "taskID": taskID, "status": status}, 201)
 
 
 if __name__ == "__main__":

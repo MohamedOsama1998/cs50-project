@@ -27,10 +27,14 @@ export const tasksReducer = (state = initState, { type, payload }) => {
     case actions.UPDATE_TASK_STATUS:
       return {
         ...state,
-        tasks: state.tasks.map((content, i) =>
-          i === state.tasks.findIndex((task) => task.taskID === payload.taskID)
-            ? { ...content, status: `${payload.status}` }
-            : content
+        tasks: state.tasks.map((task) =>
+          task.taskID === parseInt(payload.taskID)
+            ? {
+                ...task,
+                status: payload.status,
+                modifiedOn: payload.modifiedOn,
+              }
+            : task
         ),
       };
     default:

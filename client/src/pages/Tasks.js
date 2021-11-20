@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Divider } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks } from "../redux/actions/tasksActions";
@@ -30,7 +30,8 @@ const Tasks = () => {
                 title={task.title}
                 text={task.text}
                 status={task.status}
-                addedOn={tasks.addedOn}
+                addedOn={task.addedOn}
+                modifiedOn={task.modifiedOn}
                 taskID={task.taskID}
                 key={task.taskID}
               />
@@ -45,7 +46,7 @@ const Tasks = () => {
                 title={task.title}
                 text={task.text}
                 status={task.status}
-                addedOn={tasks.addedOn}
+                addedOn={task.addedOn}
                 taskID={task.taskID}
                 key={task.taskID}
               />
@@ -60,7 +61,7 @@ const Tasks = () => {
                 title={task.title}
                 text={task.text}
                 status={task.status}
-                addedOn={tasks.addedOn}
+                addedOn={task.addedOn}
                 taskID={task.taskID}
                 key={task.taskID}
               />

@@ -67,7 +67,7 @@ export const updateTaskStatus = (data) => (dispatch) => {
   }).then((res) => {
     dispatch({
       type: actions.UPDATE_TASK_STATUS,
-      payload: data,
+      payload: res.data,
     });
   });
 };
