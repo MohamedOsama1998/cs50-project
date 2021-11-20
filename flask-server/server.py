@@ -69,7 +69,7 @@ def login():
     username = findUser[0]["username"]
     if check_password_hash(userHash, password):
         token = jwt.encode({"userID": userID, "email": email, "username": username, "exp": datetime.datetime.utcnow(
-        ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
+        ) + datetime.timedelta(days=1)}, app.config["SECRET_KEY"])
         res = make_response({"userID": userID,
                             "username": username, "email": email}, 201)
         res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
@@ -81,7 +81,7 @@ def login():
 # Add task:
 
 
-@app.route("/tasks", methods=["POST", "GET"])
+@app.route("/tasks", methods=["POST", "GET", "DELETE", "PATCH"])
 @token_required
 def addTask():
     token = request.cookies.get("accessToken")
@@ -96,10 +96,21 @@ def addTask():
         text = request.form.get("text")
         taskID = db.execute("INSERT INTO tasks(userID) VALUES(?)", userID)
         db.execute("INSERT INTO taskInfo(taskID, title, text, addedOn, modifiedOn, status) VALUES(?, ?, ?, ?, ?, ?)",
-                   taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "PENDING")
+                   taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "0")
         addedTask = db.execute(
             "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
         return make_response(addedTask, 201)
+    elif request.method == "DELETE":
+        taskID = request.form.get("taskID")
+        db.execute("DELETE FROM tasks WHERE id = ?", taskID)
+        db.execute("DELETE FROM taskInfo WHERE taskID = ? ", taskID)
+        return make_response({}, 204)
+    elif request.method == "PATCH":
+        taskID = request.form.get("taskID")
+        status = request.form.get("status")
+        db.execute(
+            "UPDATE taskInfo SET status = ? WHERE taskID = ?", status, taskID)
+        return make_response({}, 204)
 
 
 if __name__ == "__main__":

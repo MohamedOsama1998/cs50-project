@@ -25,7 +25,7 @@ const Tasks = () => {
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h4">Pending tasks</Typography>
           {tasks.map((task) =>
-            task.status === "PENDING" ? (
+            task.status === "0" ? (
               <Task
                 title={task.title}
                 text={task.text}
@@ -39,13 +39,33 @@ const Tasks = () => {
         </Grid>
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h4">In progress</Typography>
-          <Task />
-          <Task />
-          <Task />
+          {tasks.map((task) =>
+            task.status === "1" ? (
+              <Task
+                title={task.title}
+                text={task.text}
+                status={task.status}
+                addedOn={tasks.addedOn}
+                taskID={task.taskID}
+                key={task.taskID}
+              />
+            ) : null
+          )}
         </Grid>
         <Grid item xs={6} md={4} xl={4}>
           <Typography variant="h4">Finished</Typography>
-          <Task />
+          {tasks.map((task) =>
+            task.status === "2" ? (
+              <Task
+                title={task.title}
+                text={task.text}
+                status={task.status}
+                addedOn={tasks.addedOn}
+                taskID={task.taskID}
+                key={task.taskID}
+              />
+            ) : null
+          )}
         </Grid>
       </Grid>
     </>

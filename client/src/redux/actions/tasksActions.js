@@ -58,3 +58,16 @@ export const deleteTask = (taskID) => (dispatch) => {
       console.log(err);
     });
 };
+
+export const updateTaskStatus = (data) => (dispatch) => {
+  Axios({
+    method: "PATCH",
+    url: "/tasks",
+    data: getFormData(data),
+  }).then((res) => {
+    dispatch({
+      type: actions.UPDATE_TASK_STATUS,
+      payload: data,
+    });
+  });
+};
