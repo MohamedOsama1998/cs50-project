@@ -79,6 +79,7 @@ const EditTaskForm = ({ task, children }) => {
               style={{
                 marginRight: "10px",
               }}
+              color="success"
             >
               Confirm
             </LoadingButton>

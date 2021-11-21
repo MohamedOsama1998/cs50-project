@@ -1,8 +1,7 @@
 import { Button, Modal, Box, Typography } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleAddTaskModal } from "../redux/actions/tasksActions";
 import AddTaskForm from "../forms/AddTaskForm";
 import AddIcon from "@mui/icons-material/Add";
+import { useState } from "react";
 
 const style = {
   position: "absolute",
@@ -17,13 +16,12 @@ const style = {
 };
 
 const AddTaskModal = () => {
-  const dispatch = useDispatch();
-  const modal = useSelector(({ tasks }) => tasks.modal);
+  const [modal, setModal] = useState(false);
   return (
     <>
       <Button
         onClick={() => {
-          dispatch(toggleAddTaskModal(modal));
+          setModal(true);
         }}
         color="success"
         variant="outlined"
@@ -34,7 +32,7 @@ const AddTaskModal = () => {
       <Modal
         open={modal}
         onClose={() => {
-          dispatch(toggleAddTaskModal(modal));
+          setModal(false);
         }}
       >
         <Box sx={style}>
@@ -46,7 +44,17 @@ const AddTaskModal = () => {
             sx={{ mt: 2 }}
             component={"div"}
           >
-            <AddTaskForm />
+            <AddTaskForm>
+              <Button
+                onClick={() => {
+                  setModal(false);
+                }}
+                variant="outlined"
+                size="large"
+              >
+                Cancel
+              </Button>
+            </AddTaskForm>
           </Typography>
         </Box>
       </Modal>

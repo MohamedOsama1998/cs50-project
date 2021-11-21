@@ -1,12 +1,11 @@
 import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch, useSelector } from "react-redux";
-import { addTask, toggleAddTaskModal } from "../redux/actions/tasksActions";
+import { useDispatch } from "react-redux";
+import { addTask } from "../redux/actions/tasksActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-const AddTaskForm = () => {
-  const modal = useSelector(({ tasks }) => tasks.modal);
+const AddTaskForm = ({ children }) => {
   const dispatch = useDispatch();
   const initialValues = {
     title: "",
@@ -19,9 +18,8 @@ const AddTaskForm = () => {
 
   const onSubmit = (values, actions) => {
     dispatch(addTask(values));
-    dispatch(toggleAddTaskModal(modal));
+    children.props.onClick();
     actions.setSubmitting(false);
-    actions.resetForm();
   };
 
   return (
@@ -78,11 +76,12 @@ const AddTaskForm = () => {
               variant="outlined"
               size="large"
               style={{
-                marginTop: "20px",
+                marginRight: "10px",
               }}
             >
               Add
             </LoadingButton>
+            {children}
           </Form>
         )}
       </Formik>

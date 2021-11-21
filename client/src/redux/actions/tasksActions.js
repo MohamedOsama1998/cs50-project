@@ -35,13 +35,6 @@ export const addTask = (task) => (dispatch) => {
     });
 };
 
-export const toggleAddTaskModal = (modal) => {
-  return {
-    type: actions.TOGGLE_ADD_TASK_MODAL,
-    payload: modal,
-  };
-};
-
 export const deleteTask = (taskID) => (dispatch) => {
   Axios({
     method: "DELETE",

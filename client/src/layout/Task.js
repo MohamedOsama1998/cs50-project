@@ -39,6 +39,7 @@ const Task = ({ task }) => {
             }}
             variant="outlined"
             size="large"
+            color="error"
           >
             Cancel
           </Button>
