@@ -1,6 +1,5 @@
 import { TextField, Alert } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { getFormData } from "../helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, setAuthError } from "../redux/actions/userActions";
 import * as Yup from "yup";
@@ -30,7 +29,7 @@ const RegisterForm = () => {
 
   const onSubmit = (values, actions) => {
     dispatch(setAuthError(""));
-    dispatch(registerUser(getFormData(values)));
+    dispatch(registerUser(values));
     actions.setSubmitting(false);
   };
 

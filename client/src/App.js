@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import Land from "./pages/Land";
 import NotFound from "./pages/NotFound";
 import Tasks from "./pages/Tasks";
+import Profile from "./pages/Profile";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,10 @@ const App = () => {
             <Route
               path="/tasks"
               element={isAuth ? <Tasks /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/profile"
+              element={isAuth ? <Profile /> : <Navigate to="/login" replace />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

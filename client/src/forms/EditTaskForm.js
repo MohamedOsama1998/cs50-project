@@ -6,7 +6,6 @@ import { updateTaskContents } from "../redux/actions/tasksActions";
 import { useDispatch } from "react-redux";
 
 const EditTaskForm = ({ task, children }) => {
-  console.log(children);
   const dispatch = useDispatch();
   const initialValues = {
     title: task.title,
