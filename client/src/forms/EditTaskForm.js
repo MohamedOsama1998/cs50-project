@@ -1,16 +1,16 @@
 import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch, useSelector } from "react-redux";
-import { addTask, toggleAddTaskModal } from "../redux/actions/tasksActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { updateTaskContents } from "../redux/actions/tasksActions";
+import { useDispatch } from "react-redux";
 
-const AddTaskForm = () => {
-  const modal = useSelector(({ tasks }) => tasks.modal);
+const EditTaskForm = ({ task, children }) => {
+  console.log(children);
   const dispatch = useDispatch();
   const initialValues = {
-    title: "",
-    text: "",
+    title: task.title,
+    text: task.text,
   };
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Please enter task title"),
@@ -18,10 +18,9 @@ const AddTaskForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(addTask(values));
-    dispatch(toggleAddTaskModal(modal));
+    dispatch(updateTaskContents({ ...values, taskID: task.taskID }));
     actions.setSubmitting(false);
-    actions.resetForm();
+    children.props.onClick();
   };
 
   return (
@@ -78,11 +77,12 @@ const AddTaskForm = () => {
               variant="outlined"
               size="large"
               style={{
-                marginTop: "20px",
+                marginRight: "10px",
               }}
             >
-              Add
+              Confirm
             </LoadingButton>
+            {children}
           </Form>
         )}
       </Formik>
@@ -90,4 +90,4 @@ const AddTaskForm = () => {
   );
 };
 
-export default AddTaskForm;
+export default EditTaskForm;

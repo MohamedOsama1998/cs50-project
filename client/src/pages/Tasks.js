@@ -1,4 +1,4 @@
-import { Grid, Typography, Divider } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks } from "../redux/actions/tasksActions";
@@ -25,47 +25,19 @@ const Tasks = () => {
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h4">Pending tasks</Typography>
           {tasks.map((task) =>
-            task.status === "0" ? (
-              <Task
-                title={task.title}
-                text={task.text}
-                status={task.status}
-                addedOn={task.addedOn}
-                modifiedOn={task.modifiedOn}
-                taskID={task.taskID}
-                key={task.taskID}
-              />
-            ) : null
+            task.status === "0" ? <Task task={task} key={task.taskID} /> : null
           )}
         </Grid>
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h4">In progress</Typography>
           {tasks.map((task) =>
-            task.status === "1" ? (
-              <Task
-                title={task.title}
-                text={task.text}
-                status={task.status}
-                addedOn={task.addedOn}
-                taskID={task.taskID}
-                key={task.taskID}
-              />
-            ) : null
+            task.status === "1" ? <Task task={task} key={task.taskID} /> : null
           )}
         </Grid>
         <Grid item xs={6} md={4} xl={4}>
           <Typography variant="h4">Finished</Typography>
           {tasks.map((task) =>
-            task.status === "2" ? (
-              <Task
-                title={task.title}
-                text={task.text}
-                status={task.status}
-                addedOn={task.addedOn}
-                taskID={task.taskID}
-                key={task.taskID}
-              />
-            ) : null
+            task.status === "2" ? <Task task={task} key={task.taskID} /> : null
           )}
         </Grid>
       </Grid>

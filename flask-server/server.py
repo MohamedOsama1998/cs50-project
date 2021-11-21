@@ -81,7 +81,7 @@ def login():
 # Add task:
 
 
-@app.route("/tasks", methods=["POST", "GET", "DELETE", "PATCH"])
+@app.route("/tasks", methods=["POST", "GET", "DELETE", "PATCH", "PUT"])
 @token_required
 def addTask():
     token = request.cookies.get("accessToken")
@@ -111,6 +111,15 @@ def addTask():
         db.execute(
             "UPDATE taskInfo SET status = ?, modifiedOn = ? WHERE taskID = ?", status, strftime('%Y-%m-%d %H:%M:%S'), taskID)
         return make_response({"modifiedOn": strftime('%Y-%m-%d %H:%M:%S'), "taskID": taskID, "status": status}, 201)
+    elif request.method == "PUT":
+        taskID = request.form.get("taskID")
+        title = request.form.get("title")
+        text = request.form.get("text")
+        db.execute(
+            "UPDATE taskInfo SET title = ?, text = ?, modifiedOn = ? WHERE taskID = ?", title, text, strftime('%Y-%m-%d %H:%M:%S'), taskID)
+        updatedTask = db.execute(
+            "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
+        return make_response(updatedTask, 200)
 
 
 if __name__ == "__main__":

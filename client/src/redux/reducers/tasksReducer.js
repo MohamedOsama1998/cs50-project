@@ -37,6 +37,13 @@ export const tasksReducer = (state = initState, { type, payload }) => {
             : task
         ),
       };
+    case actions.UPDATE_TASK_CONTENTS:
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.taskID === parseInt(payload.taskID) ? payload : task
+        ),
+      };
     default:
       return state;
   }

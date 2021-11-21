@@ -64,10 +64,31 @@ export const updateTaskStatus = (data) => (dispatch) => {
     method: "PATCH",
     url: "/tasks",
     data: getFormData(data),
-  }).then((res) => {
-    dispatch({
-      type: actions.UPDATE_TASK_STATUS,
-      payload: res.data,
+  })
+    .then((res) => {
+      dispatch({
+        type: actions.UPDATE_TASK_STATUS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
+};
+
+export const updateTaskContents = (task) => (dispatch) => {
+  Axios({
+    method: "PUT",
+    url: "/tasks",
+    data: getFormData(task),
+  })
+    .then((res) => {
+      dispatch({
+        type: actions.UPDATE_TASK_CONTENTS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
