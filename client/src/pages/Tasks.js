@@ -7,13 +7,13 @@ import AddTaskModal from "../layout/AddTaskModal";
 
 const Tasks = () => {
   const tasks = useSelector(({ tasks }) => tasks);
+  const userInfo = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);
   return (
     <>
-      <AddTaskModal />
       <Grid
         columns={{ xs: 7, md: 13, xl: 14 }}
         container
@@ -21,7 +21,20 @@ const Tasks = () => {
         direction="row"
         alignItems="flex-start"
         justifyContent="center"
+        style={{
+          marginTop: "20px",
+        }}
       >
+        <Grid item xs={6} md={12} xl={12}>
+          <Typography variant="h4">
+            Welcome back, {userInfo.username}!
+          </Typography>
+        </Grid>
+        <Grid item xs={6} md={12} xl={12}>
+          <Typography variant="h6">
+            <AddTaskModal />
+          </Typography>
+        </Grid>
         <Grid item xs={3} md={4} xl={4}>
           <Typography variant="h5">Pending</Typography>
           {tasks.map((task) =>

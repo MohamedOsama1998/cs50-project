@@ -1,9 +1,11 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { fetchDarkmode } from "./redux/actions/themeAction";
+import Cookies from "js-cookie";
 import { fetchUserFromCookies } from "./redux/actions/userActions";
+import jwt_decode from "jwt-decode";
 import "./styles/App.css";
 
 import Header from "./layout/Header";
@@ -22,9 +24,9 @@ const App = () => {
   const darkTheme = createTheme({ palette: { mode: "dark" } });
   const lightTheme = createTheme({ palette: { mode: "light" } });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(fetchDarkmode());
-    dispatch(fetchUserFromCookies());
+    dispatch(fetchUserFromCookies(jwt_decode(Cookies.get("accessToken"))));
   }, [dispatch]);
 
   return (

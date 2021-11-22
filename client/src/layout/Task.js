@@ -87,10 +87,10 @@ const Task = ({ task }) => {
           </CardContent>
           <Divider variant="middle" />
           <CardContent>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="caption" display="block" gutterBottom>
               Added {moment(task.addedOn).fromNow()}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="caption" display="block" gutterBottom>
               Last modified {moment(task.modifiedOn).fromNow()}
             </Typography>
           </CardContent>
