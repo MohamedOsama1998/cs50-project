@@ -1,16 +1,11 @@
 import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import { toggleDarkmode } from "../redux/actions/themeAction";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SignedOutLinks from "../links/SignedOutLinks";
 import SignedInLinks from "../links/SignedInLinks";
 
 const Header = () => {
-  const isDarkmode = useSelector(({ theme }) => theme.isDarkmode);
   const isAuth = useSelector((state) => state.auth.isAuth);
-  const themeDispatch = useDispatch();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -33,14 +28,6 @@ const Header = () => {
             sx={{ flexGrow: 1 }}
           ></Typography>
           {isAuth ? <SignedInLinks /> : <SignedOutLinks />}
-          <IconButton
-            color="inherit"
-            onClick={() => {
-              themeDispatch(toggleDarkmode(isDarkmode));
-            }}
-          >
-            {isDarkmode ? <LightModeIcon /> : <DarkModeIcon />}
-          </IconButton>
         </Toolbar>
       </AppBar>
     </Box>

@@ -46,12 +46,12 @@ const App = () => {
               element={isAuth ? <Navigate to="/tasks" replace /> : <Register />}
             />
             <Route
-              path="/tasks"
-              element={isAuth ? <Tasks /> : <Navigate to="/login" replace />}
-            />
-            <Route
               path="/profile"
               element={isAuth ? <Profile /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/tasks"
+              element={isAuth ? <Tasks /> : <Navigate to="/login" replace />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
