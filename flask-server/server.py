@@ -78,7 +78,6 @@ def login():
     return make_response({"message": "Incorrect email or password"}, 409)
 
 # TASKS APIS
-# Add task:
 
 
 @app.route("/tasks", methods=["POST", "GET", "DELETE", "PATCH", "PUT"])
@@ -121,8 +120,11 @@ def addTask():
             "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
         return make_response(updatedTask, 200)
 
+# PROFILE API
+# Update profile info
 
-@app.route("/profile", methods=["POST"])
+
+@app.route("/profile/updateinfo", methods=["PATCH"])
 @token_required
 def profile():
     token = request.cookies.get("accessToken")
@@ -133,16 +135,17 @@ def profile():
     if request.form.get("type") == "updateInfo":
         username = request.form.get("username")
         email = request.form.get("email")
-        currentPassword = request.form.get("password")
+        currentPassword = request.form.get("currentPassword")
         if check_password_hash(userHash, currentPassword):
             db.execute("UPDATE users SET username = ?, email = ? WHERE id = ?",
                        username, email, userID)
             updatedUser = db.execute(
                 "SELECT * FROM users WHERE id = ?", userID)[0]
+
             token = jwt.encode({"userID": userID, "email": updatedUser["email"], "username": updatedUser["username"], "exp": datetime.datetime.utcnow(
             ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
             res = make_response({"userID": userID,
-                                 "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
+                                "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
             res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
             ) + datetime.timedelta(days=1))
 
@@ -150,28 +153,28 @@ def profile():
         else:
             return make_response({"message": "The password you entered is incorrect."}, 409)
 
-    # user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
-    # userHash = user["password"]
-    # if check_password_hash(userHash, currentPassword):
-    #     if type == "password":
-    #         db.execute("UPDATE users SET password = ? WHERE id = ?",
-    #                    generate_password_hash(text), userID)
-    #         return make_response({}, 204)
-    #     else:
-            # db.execute("UPDATE users SET ? = ? WHERE id = ?",
-            #            type, text, userID)
-            # updatedUser = db.execute(
-            #     "SELECT * FROM users WHERE id = ?", userID)[0]
-            # token = jwt.encode({"userID": userID, "email": updatedUser["email"], "username": updatedUser["username"], "exp": datetime.datetime.utcnow(
-            # ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
-            # res = make_response({"userID": userID,
-            #                      "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
-            # res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
-            # ) + datetime.timedelta(days=1))
+# Change user password
 
-            # return res
 
-    # return make_response({"message": "The password you entered is incorrect"}, 409)
+@app.route("/profile/changepassword", methods=["PATCH"])
+@token_required
+def changePassword():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
+    userHash = user["password"]
+    oldPassword = request.form.get("oldPassword")
+    newPassword = request.form.get("newPassword")
+    if check_password_hash(userHash, oldPassword):
+        if oldPassword == newPassword:
+            return make_response({"message": "The password you entered is already your current password."}, 409)
+        else:
+            db.execute("UPDATE users SET password = ?",
+                       generate_password_hash(newPassword))
+            return make_response({}, 201)
+    else:
+        return make_response({"message": "The password you entered is incorrect."}, 409)
 
 
 if __name__ == "__main__":

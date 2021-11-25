@@ -59,8 +59,8 @@ export const loginUser = (payload) => async (dispatch) => {
 export const updateUserInfo = (data) => (dispatch) => {
   return new Promise((resolve, reject) => {
     Axios({
-      method: "POST",
-      url: "profile",
+      method: "PATCH",
+      url: "profile/updateinfo",
       data: getFormData(data),
     })
       .then((res) => {
@@ -68,6 +68,26 @@ export const updateUserInfo = (data) => (dispatch) => {
           type: actions.UPDATE_USER,
           payload: res.data,
         });
+        resolve();
+      })
+      .catch((err) => {
+        dispatch({
+          type: actions.SET_AUTH_ERROR,
+          payload: err.response.data.message,
+        });
+        reject();
+      });
+  });
+};
+
+export const updateUserPassword = (data) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: "PATCH",
+      url: "profile/changepassword",
+      data: getFormData(data),
+    })
+      .then(() => {
         resolve();
       })
       .catch((err) => {
