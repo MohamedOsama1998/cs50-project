@@ -14,8 +14,8 @@ export const fetchUserFromCookies = () => (dispatch) => {
   }
 };
 
-export const registerUser = (payload) => (dispatch) => {
-  Axios({
+export const registerUser = (payload) => async (dispatch) => {
+  await Axios({
     method: "POST",
     url: "/register",
     data: getFormData(payload),
@@ -35,8 +35,8 @@ export const registerUser = (payload) => (dispatch) => {
     });
 };
 
-export const loginUser = (payload) => (dispatch) => {
-  Axios({
+export const loginUser = (payload) => async (dispatch) => {
+  await Axios({
     method: "POST",
     url: "/login",
     data: getFormData(payload),
@@ -56,10 +56,34 @@ export const loginUser = (payload) => (dispatch) => {
     });
 };
 
+export const updateUserInfo = (data) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: "POST",
+      url: "profile",
+      data: getFormData(data),
+    })
+      .then((res) => {
+        dispatch({
+          type: actions.UPDATE_USER,
+          payload: res.data,
+        });
+        resolve();
+      })
+      .catch((err) => {
+        dispatch({
+          type: actions.SET_AUTH_ERROR,
+          payload: err.response.data.message,
+        });
+        reject();
+      });
+  });
+};
+
 export const setAuthError = (authErr) => {
   return {
     type: actions.SET_AUTH_ERROR,
-    authErr: authErr,
+    payload: authErr,
   };
 };
 

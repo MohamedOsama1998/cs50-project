@@ -63,7 +63,7 @@ def login():
     findUser = db.execute(
         "SELECT * FROM users WHERE email = ?", email)
     if len(findUser) == 0:
-        return make_response({"message": "Incorrect email or password"}, 404)
+        return make_response({"message": "Incorrect email or password"}, 409)
     userHash = findUser[0]["password"]
     userID = findUser[0]["id"]
     username = findUser[0]["username"]
@@ -120,6 +120,58 @@ def addTask():
         updatedTask = db.execute(
             "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
         return make_response(updatedTask, 200)
+
+
+@app.route("/profile", methods=["POST"])
+@token_required
+def profile():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
+    userHash = user["password"]
+    if request.form.get("type") == "updateInfo":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        currentPassword = request.form.get("password")
+        if check_password_hash(userHash, currentPassword):
+            db.execute("UPDATE users SET username = ?, email = ? WHERE id = ?",
+                       username, email, userID)
+            updatedUser = db.execute(
+                "SELECT * FROM users WHERE id = ?", userID)[0]
+            token = jwt.encode({"userID": userID, "email": updatedUser["email"], "username": updatedUser["username"], "exp": datetime.datetime.utcnow(
+            ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
+            res = make_response({"userID": userID,
+                                 "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
+            res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
+            ) + datetime.timedelta(days=1))
+
+            return res
+        else:
+            return make_response({"message": "The password you entered is incorrect."}, 409)
+
+    # user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
+    # userHash = user["password"]
+    # if check_password_hash(userHash, currentPassword):
+    #     if type == "password":
+    #         db.execute("UPDATE users SET password = ? WHERE id = ?",
+    #                    generate_password_hash(text), userID)
+    #         return make_response({}, 204)
+    #     else:
+            # db.execute("UPDATE users SET ? = ? WHERE id = ?",
+            #            type, text, userID)
+            # updatedUser = db.execute(
+            #     "SELECT * FROM users WHERE id = ?", userID)[0]
+            # token = jwt.encode({"userID": userID, "email": updatedUser["email"], "username": updatedUser["username"], "exp": datetime.datetime.utcnow(
+            # ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
+            # res = make_response({"userID": userID,
+            #                      "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
+            # res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
+            # ) + datetime.timedelta(days=1))
+
+            # return res
+
+    # return make_response({"message": "The password you entered is incorrect"}, 409)
 
 
 if __name__ == "__main__":

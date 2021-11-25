@@ -7,6 +7,7 @@ export const actions = {
   AUTH_USER: "AUTH_USER",
   LOGOUT_USER: "LOGOUT_USER",
   SET_AUTH_ERROR: "SET_AUTH_ERROR",
+  UPDATE_USER: "UPDATE_USER",
   // Tasks actions
   FETCH_TASKS: "FETCH_TASKS",
   ADD_TASK: "ADD_TASK",

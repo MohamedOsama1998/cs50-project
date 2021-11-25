@@ -2,8 +2,8 @@ import { actions } from "../actionConstants";
 import Axios from "axios";
 import { getFormData } from "../../helpers";
 
-export const fetchTasks = () => (dispatch) => {
-  Axios({
+export const fetchTasks = () => async (dispatch) => {
+  await Axios({
     method: "GET",
     url: "/tasks",
   })
@@ -18,8 +18,8 @@ export const fetchTasks = () => (dispatch) => {
     });
 };
 
-export const addTask = (task) => (dispatch) => {
-  Axios({
+export const addTask = (task) => async (dispatch) => {
+  await Axios({
     method: "POST",
     url: "/tasks",
     data: getFormData(task),
@@ -35,8 +35,8 @@ export const addTask = (task) => (dispatch) => {
     });
 };
 
-export const deleteTask = (taskID) => (dispatch) => {
-  Axios({
+export const deleteTask = (taskID) => async (dispatch) => {
+  await Axios({
     method: "DELETE",
     url: "/tasks",
     data: getFormData({ taskID: taskID }),
@@ -52,8 +52,8 @@ export const deleteTask = (taskID) => (dispatch) => {
     });
 };
 
-export const updateTaskStatus = (data) => (dispatch) => {
-  Axios({
+export const updateTaskStatus = (data) => async (dispatch) => {
+  await Axios({
     method: "PATCH",
     url: "/tasks",
     data: getFormData(data),
@@ -69,8 +69,8 @@ export const updateTaskStatus = (data) => (dispatch) => {
     });
 };
 
-export const updateTaskContents = (task) => (dispatch) => {
-  Axios({
+export const updateTaskContents = (task) => async (dispatch) => {
+  await Axios({
     method: "PUT",
     url: "/tasks",
     data: getFormData(task),

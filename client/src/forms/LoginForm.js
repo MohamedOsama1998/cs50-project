@@ -23,8 +23,9 @@ const LoginForm = () => {
 
   const onSubmit = (values, actions) => {
     dispatch(setAuthError(""));
-    dispatch(loginUser(values));
-    actions.setSubmitting(false);
+    dispatch(loginUser(values)).then(() => {
+      actions.setSubmitting(false);
+    });
   };
 
   return (

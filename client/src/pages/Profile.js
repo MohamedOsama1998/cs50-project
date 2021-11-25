@@ -1,9 +1,10 @@
-import { useSelector } from "react-redux";
-import { Grid } from "@mui/material";
-import ProfileField from "../layout/ProfileField";
+import { Grid, Button, Paper } from "@mui/material";
+import DisplayProfileInfo from "../layout/DisplayProfileInfo";
+import EditProfileForm from "../forms/EditProfileForm";
+import { useState } from "react";
 
 const Profile = () => {
-  const userInfo = useSelector(({ auth }) => auth);
+  const [isEditing, setEditing] = useState(false);
   return (
     <Grid
       container
@@ -16,9 +17,42 @@ const Profile = () => {
         marginTop: "20px",
       }}
     >
-      <ProfileField text={userInfo.username} label="Username" type="text" />
-      <ProfileField text={userInfo.email} label="Email" type="email" />
-      <ProfileField text="*******" label="Password" type="password" />
+      <Grid item xs={5} md={3} xl={5}>
+        <Paper elevation={0} className="form">
+          {isEditing ? (
+            <EditProfileForm>
+              <Button
+                onClick={() => {
+                  setEditing(false);
+                }}
+                variant="outlined"
+                size="large"
+                style={{
+                  marginTop: "20px",
+                  marginRight: "15px",
+                }}
+              >
+                Cancel
+              </Button>
+            </EditProfileForm>
+          ) : (
+            <DisplayProfileInfo>
+              <Button
+                onClick={() => {
+                  setEditing(!isEditing);
+                }}
+                variant="outlined"
+                size="large"
+                style={{
+                  marginTop: "20px",
+                }}
+              >
+                Edit
+              </Button>
+            </DisplayProfileInfo>
+          )}
+        </Paper>
+      </Grid>
     </Grid>
   );
 };
