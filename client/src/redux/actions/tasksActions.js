@@ -5,7 +5,7 @@ import { getFormData } from "../../helpers";
 export const fetchTasks = () => async (dispatch) => {
   await Axios({
     method: "GET",
-    url: "/tasks",
+    url: "/tasks/fetch",
   })
     .then((res) => {
       dispatch({
@@ -20,8 +20,8 @@ export const fetchTasks = () => async (dispatch) => {
 
 export const addTask = (task) => async (dispatch) => {
   await Axios({
-    method: "POST",
-    url: "/tasks",
+    method: "PUT",
+    url: "/tasks/add",
     data: getFormData(task),
   })
     .then((res) => {
@@ -38,7 +38,7 @@ export const addTask = (task) => async (dispatch) => {
 export const deleteTask = (taskID) => async (dispatch) => {
   await Axios({
     method: "DELETE",
-    url: "/tasks",
+    url: "/tasks/delete",
     data: getFormData({ taskID: taskID }),
   })
     .then(() => {
@@ -55,7 +55,7 @@ export const deleteTask = (taskID) => async (dispatch) => {
 export const updateTaskStatus = (data) => async (dispatch) => {
   await Axios({
     method: "PATCH",
-    url: "/tasks",
+    url: "/tasks/updatestatus",
     data: getFormData(data),
   })
     .then((res) => {
@@ -71,8 +71,8 @@ export const updateTaskStatus = (data) => async (dispatch) => {
 
 export const updateTaskContents = (task) => async (dispatch) => {
   await Axios({
-    method: "PUT",
-    url: "/tasks",
+    method: "PATCH",
+    url: "/tasks/updatecontent",
     data: getFormData(task),
   })
     .then((res) => {
