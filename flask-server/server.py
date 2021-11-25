@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, redirect
+from flask import Flask, make_response, request
 from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
@@ -78,47 +78,74 @@ def login():
     return make_response({"message": "Incorrect email or password"}, 409)
 
 # TASKS APIS
+# Fetch tasks API
 
 
-@app.route("/tasks", methods=["POST", "GET", "DELETE", "PATCH", "PUT"])
+@app.route("/tasks/fetch", methods=["GET"])
+@token_required
+def fetchTasks():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    userTasks = db.execute(
+        "SELECT * FROM taskInfo WHERE taskID in (SELECT id FROM tasks WHERE userID = ?)", userID)
+    return make_response({"tasks": userTasks}, 200)
+
+# Add task API
+
+
+@app.route("/tasks/add", methods=["PUT"])
 @token_required
 def addTask():
     token = request.cookies.get("accessToken")
     userID = jwt.decode(
         token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
-    if request.method == "GET":
-        userTasks = db.execute(
-            "SELECT * FROM taskInfo WHERE taskID in (SELECT id FROM tasks WHERE userID = ?)", userID)
-        return make_response({"tasks": userTasks}, 200)
-    elif request.method == "POST":
-        title = request.form.get("title")
-        text = request.form.get("text")
-        taskID = db.execute("INSERT INTO tasks(userID) VALUES(?)", userID)
-        db.execute("INSERT INTO taskInfo(taskID, title, text, addedOn, modifiedOn, status) VALUES(?, ?, ?, ?, ?, ?)",
-                   taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "0")
-        addedTask = db.execute(
-            "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
-        return make_response(addedTask, 201)
-    elif request.method == "DELETE":
-        taskID = request.form.get("taskID")
-        db.execute("DELETE FROM tasks WHERE id = ?", taskID)
-        db.execute("DELETE FROM taskInfo WHERE taskID = ? ", taskID)
-        return make_response({}, 204)
-    elif request.method == "PATCH":
-        taskID = request.form.get("taskID")
-        status = request.form.get("status")
-        db.execute(
-            "UPDATE taskInfo SET status = ?, modifiedOn = ? WHERE taskID = ?", status, strftime('%Y-%m-%d %H:%M:%S'), taskID)
-        return make_response({"modifiedOn": strftime('%Y-%m-%d %H:%M:%S'), "taskID": taskID, "status": status}, 201)
-    elif request.method == "PUT":
-        taskID = request.form.get("taskID")
-        title = request.form.get("title")
-        text = request.form.get("text")
-        db.execute(
-            "UPDATE taskInfo SET title = ?, text = ?, modifiedOn = ? WHERE taskID = ?", title, text, strftime('%Y-%m-%d %H:%M:%S'), taskID)
-        updatedTask = db.execute(
-            "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
-        return make_response(updatedTask, 200)
+    title = request.form.get("title")
+    text = request.form.get("text")
+    taskID = db.execute("INSERT INTO tasks(userID) VALUES(?)", userID)
+    db.execute("INSERT INTO taskInfo(taskID, title, text, addedOn, modifiedOn, status) VALUES(?, ?, ?, ?, ?, ?)",
+               taskID, title, text, strftime('%Y-%m-%d %H:%M:%S'), strftime('%Y-%m-%d %H:%M:%S'), "0")
+    addedTask = db.execute(
+        "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
+    return make_response(addedTask, 201)
+
+# Delete task API
+
+
+@app.route("/tasks/delete", methods=["DELETE"])
+@token_required
+def deleteTask():
+    taskID = request.form.get("taskID")
+    db.execute("DELETE FROM tasks WHERE id = ?", taskID)
+    db.execute("DELETE FROM taskInfo WHERE taskID = ? ", taskID)
+    return make_response({}, 204)
+
+# Update task status
+
+
+@app.route("/tasks/updatestatus", methods=["PATCH"])
+@token_required
+def updateTaskStatus():
+    taskID = request.form.get("taskID")
+    status = request.form.get("status")
+    db.execute(
+        "UPDATE taskInfo SET status = ?, modifiedOn = ? WHERE taskID = ?", status, strftime('%Y-%m-%d %H:%M:%S'), taskID)
+    return make_response({"modifiedOn": strftime('%Y-%m-%d %H:%M:%S'), "taskID": taskID, "status": status}, 201)
+
+# Update task contents
+
+
+@app.route("/tasks/updatecontent", methods=["PATCH"])
+@token_required
+def updateTaskContent():
+    taskID = request.form.get("taskID")
+    title = request.form.get("title")
+    text = request.form.get("text")
+    db.execute(
+        "UPDATE taskInfo SET title = ?, text = ?, modifiedOn = ? WHERE taskID = ?", title, text, strftime('%Y-%m-%d %H:%M:%S'), taskID)
+    updatedTask = db.execute(
+        "SELECT * FROM taskInfo WHERE taskID = ?", taskID)[0]
+    return make_response(updatedTask, 200)
 
 # PROFILE API
 # Update profile info
