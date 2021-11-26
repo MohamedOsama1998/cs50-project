@@ -15,48 +15,52 @@ export const fetchUserFromCookies = () => (dispatch) => {
 };
 
 export const registerUser = (payload) => async (dispatch) => {
-  await Axios({
-    method: "POST",
-    url: "/register",
-    data: getFormData(payload),
-    headers: { "Content-Type": "multipart/form-data" },
-  })
-    .then((res) => {
-      dispatch({
-        type: actions.AUTH_USER,
-        payload: res.data,
-      });
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: "POST",
+      url: "/register",
+      data: getFormData(payload),
+      headers: { "Content-Type": "multipart/form-data" },
     })
-    .catch((err) => {
-      dispatch({
-        type: actions.SET_AUTH_ERROR,
-        payload: err.response.data.message,
+      .then((res) => {
+        dispatch({
+          type: actions.AUTH_USER,
+          payload: res.data,
+        });
+        resolve();
+      })
+      .catch((err) => {
+        reject(err.response.data.message);
       });
-    });
+  });
 };
 
 export const loginUser = (payload) => async (dispatch) => {
-  await Axios({
-    method: "POST",
-    url: "/login",
-    data: getFormData(payload),
-    headers: { "Content-Type": "multipart/form-data" },
-  })
-    .then((res) => {
-      dispatch({
-        type: actions.AUTH_USER,
-        payload: res.data,
-      });
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: "POST",
+      url: "/login",
+      data: getFormData(payload),
+      headers: { "Content-Type": "multipart/form-data" },
     })
-    .catch((err) => {
-      dispatch({
-        type: actions.SET_AUTH_ERROR,
-        payload: err.response.data.message,
+      .then((res) => {
+        dispatch({
+          type: actions.AUTH_USER,
+          payload: res.data,
+        });
+        resolve();
+      })
+      .catch((err) => {
+        dispatch({
+          type: actions.SET_AUTH_ERROR,
+          payload: err.response.data.message,
+        });
+        reject(err.response.data.message);
       });
-    });
+  });
 };
 
-export const updateUserInfo = (data) => (dispatch) => {
+export const updateUserInfo = (data) => async (dispatch) => {
   return new Promise((resolve, reject) => {
     Axios({
       method: "PATCH",

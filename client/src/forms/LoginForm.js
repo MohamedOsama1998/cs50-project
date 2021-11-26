@@ -1,12 +1,13 @@
 import { TextField, Alert } from "@mui/material";
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser, setAuthError } from "../redux/actions/userActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 const LoginForm = () => {
-  const authErr = useSelector(({ auth }) => auth.authErr);
+  const [authErr, setAuthErr] = useState("");
   const dispatch = useDispatch();
   const initialValues = {
     email: "",
@@ -22,10 +23,15 @@ const LoginForm = () => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(setAuthError(""));
-    dispatch(loginUser(values)).then(() => {
-      actions.setSubmitting(false);
-    });
+    setAuthErr("");
+    dispatch(loginUser(values))
+      .then(() => {
+        actions.setSubmitting(false);
+      })
+      .catch((err) => {
+        setAuthErr(err);
+        actions.setSubmitting(false);
+      });
   };
 
   return (

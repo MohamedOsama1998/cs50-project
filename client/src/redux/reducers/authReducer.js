@@ -1,6 +1,6 @@
 import { actions } from "../actionConstants";
 
-const initState = { authErr: "" };
+const initState = { isAuth: false };
 
 export const authReducer = (state = initState, { type, payload }) => {
   switch (type) {
@@ -20,11 +20,6 @@ export const authReducer = (state = initState, { type, payload }) => {
       return {
         ...state,
         ...payload,
-      };
-    case actions.SET_AUTH_ERROR:
-      return {
-        ...state,
-        authErr: payload,
       };
     case actions.LOGOUT_USER:
       return {};

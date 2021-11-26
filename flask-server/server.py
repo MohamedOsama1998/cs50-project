@@ -203,6 +203,22 @@ def changePassword():
     else:
         return make_response({"message": "The password you entered is incorrect."}, 409)
 
+# Delete user
+
+
+@app.route("/profile/deleteuser", methods=["PATCH"])
+@token_required
+def deleteUser():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
+    userHash = user["password"]
+    oldPassword = request.form.get("oldPassword")
+    if check_password_hash(userHash, oldPassword):
+        return "Okay dude"
+    return "NO"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
