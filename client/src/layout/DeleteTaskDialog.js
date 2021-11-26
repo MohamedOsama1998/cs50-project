@@ -7,6 +7,7 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -14,9 +15,14 @@ import { deleteTask } from "../redux/actions/tasksActions";
 
 const DeleteTaskDialog = ({ taskID }) => {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const handleDelete = () => {
-    dispatch(deleteTask(taskID));
+    setLoading(true);
+    dispatch(deleteTask(taskID)).catch((err) => {
+      setLoading(false);
+      console.log(err);
+    });
   };
   return (
     <>
@@ -49,9 +55,9 @@ const DeleteTaskDialog = ({ taskID }) => {
           >
             Cancel
           </Button>
-          <Button onClick={handleDelete} color="error">
+          <LoadingButton onClick={handleDelete} color="error" loading={loading}>
             Delete
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </>

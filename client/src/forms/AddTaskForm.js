@@ -17,9 +17,14 @@ const AddTaskForm = ({ children }) => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(addTask(values));
-    children.props.onClick();
-    actions.setSubmitting(false);
+    dispatch(addTask(values))
+      .then(() => {
+        actions.setSubmitting(false);
+        children.props.onClick();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

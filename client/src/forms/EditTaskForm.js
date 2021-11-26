@@ -17,9 +17,15 @@ const EditTaskForm = ({ task, children }) => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(updateTaskContents({ ...values, taskID: task.taskID }));
-    actions.setSubmitting(false);
-    children.props.onClick();
+    dispatch(updateTaskContents({ ...values, taskID: task.taskID }))
+      .then(() => {
+        actions.setSubmitting(false);
+        children.props.onClick();
+      })
+      .catch((err) => {
+        actions.setSubmitting(false);
+        console.log(err);
+      });
   };
 
   return (
