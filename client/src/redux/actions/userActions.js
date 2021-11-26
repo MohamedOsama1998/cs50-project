@@ -96,14 +96,44 @@ export const updateUserPassword = (data) => (dispatch) => {
   });
 };
 
-export const setAuthError = (authErr) => {
-  return {
-    type: actions.SET_AUTH_ERROR,
-    payload: authErr,
-  };
+export const checkUserPassword = (password) => () => {
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: "POST",
+      url: "/auth/check",
+      data: getFormData(password),
+    })
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        reject(err.response.data.message);
+      });
+  });
+};
+
+export const deleteUser = () => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    Axios({
+      method: "DELETE",
+      url: "/auth/deleteuser",
+    })
+      .then(() => {
+        Cookies.remove("accessToken");
+        dispatch({
+          type: actions.LOGOUT_USER,
+        });
+        resolve();
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 };
 
 export const logOutUser = () => {
+  Cookies.remove("accessToken");
+
   return {
     type: actions.LOGOUT_USER,
   };

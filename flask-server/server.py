@@ -33,6 +33,23 @@ def token_required(f):
 # AUTH APIS
 # Register API
 
+# Check password
+
+
+@app.route("/auth/check", methods=["POST"])
+@token_required
+def auth():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    userHash = db.execute(
+        "SELECT * FROM users WHERE id = ?", userID)[0]["password"]
+    password = request.form.get("password")
+    if check_password_hash(userHash, password):
+        return make_response({}, 201)
+    else:
+        return make_response({"message": "The password you entered is incorrect."}, 401)
+
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -76,6 +93,22 @@ def login():
         ) + datetime.timedelta(days=1))
         return res
     return make_response({"message": "Incorrect email or password"}, 409)
+
+# Delete user API
+
+
+@app.route("/auth/deleteuser", methods=["DELETE"])
+@token_required
+def deleteUser():
+    token = request.cookies.get("accessToken")
+    userID = jwt.decode(
+        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
+    db.execute(
+        "DELETE FROM taskInfo WHERE taskID in (SELECT id FROM tasks WHERE userID = ?)", userID)
+    db.execute("DELETE FROM tasks WHERE userID = ?", userID)
+    db.execute("DELETE FROM users WHERE id = ?", userID)
+    return make_response({}, 204)
+
 
 # TASKS APIS
 # Fetch tasks API
@@ -202,22 +235,6 @@ def changePassword():
             return make_response({}, 201)
     else:
         return make_response({"message": "The password you entered is incorrect."}, 409)
-
-# Delete user
-
-
-@app.route("/profile/deleteuser", methods=["PATCH"])
-@token_required
-def deleteUser():
-    token = request.cookies.get("accessToken")
-    userID = jwt.decode(
-        token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
-    user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
-    userHash = user["password"]
-    oldPassword = request.form.get("oldPassword")
-    if check_password_hash(userHash, oldPassword):
-        return "Okay dude"
-    return "NO"
 
 
 if __name__ == "__main__":

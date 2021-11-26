@@ -2,7 +2,7 @@ import { TextField, Alert } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { registerUser, setAuthError } from "../redux/actions/userActions";
+import { registerUser } from "../redux/actions/userActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -46,7 +46,7 @@ const RegisterForm = () => {
         <Alert
           severity="error"
           onClose={() => {
-            dispatch(setAuthError(""));
+            setAuthErr("");
           }}
         >
           {authErr}

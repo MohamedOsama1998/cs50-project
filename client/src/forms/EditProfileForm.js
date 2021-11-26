@@ -3,7 +3,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { setAuthError, updateUserInfo } from "../redux/actions/userActions";
+import { updateUserInfo } from "../redux/actions/userActions";
 import * as Yup from "yup";
 
 const EditProfileForm = ({ children }) => {
@@ -56,7 +56,7 @@ const EditProfileForm = ({ children }) => {
         <Alert
           severity="error"
           onClose={() => {
-            dispatch(setAuthError(""));
+            setAuthErr("");
           }}
           style={{
             marginBottom: "20px",

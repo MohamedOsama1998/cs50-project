@@ -2,6 +2,7 @@ import { Grid, Button, Paper } from "@mui/material";
 import DisplayProfileInfo from "../layout/DisplayProfileInfo";
 import EditProfileForm from "../forms/EditProfileForm";
 import ChangePasswordForm from "../forms/ChangePasswordForm";
+import DeleteUserForm from "../forms/DeleteUserForm";
 import { useState } from "react";
 
 const Profile = () => {
@@ -47,6 +48,23 @@ const Profile = () => {
         </EditProfileForm>
       );
     } else if (isDeleteAccount) {
+      return (
+        <DeleteUserForm>
+          <Button
+            onClick={() => {
+              setDeleteAccount(false);
+            }}
+            variant="outlined"
+            size="large"
+            style={{
+              marginTop: "20px",
+              marginRight: "15px",
+            }}
+          >
+            Cancel
+          </Button>
+        </DeleteUserForm>
+      );
     } else {
       return (
         <DisplayProfileInfo>
