@@ -10,7 +10,9 @@ const Tasks = () => {
   const userInfo = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchTasks());
+    dispatch(fetchTasks()).catch((err) => {
+      console.log(err.response.data);
+    });
   }, [dispatch]);
   return (
     <>

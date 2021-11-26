@@ -75,11 +75,7 @@ export const updateUserInfo = (data) => async (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        dispatch({
-          type: actions.SET_AUTH_ERROR,
-          payload: err.response.data.message,
-        });
-        reject();
+        reject(err.response.data.message);
       });
   });
 };
@@ -95,11 +91,7 @@ export const updateUserPassword = (data) => (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        dispatch({
-          type: actions.SET_AUTH_ERROR,
-          payload: err.response.data.message,
-        });
-        reject();
+        reject(err.response.data.message);
       });
   });
 };

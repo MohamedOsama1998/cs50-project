@@ -1,12 +1,13 @@
 import { TextField, Alert, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { setAuthError, updateUserPassword } from "../redux/actions/userActions";
 import * as Yup from "yup";
 
 const ChangePasswordForm = ({ children }) => {
-  const authErr = useSelector(({ auth }) => auth.authErr);
+  const [authErr, setAuthErr] = useState("");
   const dispatch = useDispatch();
   const initialValues = {
     oldPassword: "",
@@ -24,13 +25,14 @@ const ChangePasswordForm = ({ children }) => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(setAuthError(""));
+    setAuthErr("");
     dispatch(updateUserPassword(values))
       .then(() => {
         actions.setSubmitting(false);
         children.props.onClick();
       })
-      .catch(() => {
+      .catch((err) => {
+        setAuthErr(err);
         actions.setSubmitting(false);
       });
   };

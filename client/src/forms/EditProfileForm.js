@@ -2,10 +2,12 @@ import { TextField, Alert, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { setAuthError, updateUserInfo } from "../redux/actions/userActions";
 import * as Yup from "yup";
 
 const EditProfileForm = ({ children }) => {
+  const [authErr, setAuthErr] = useState("");
   const userInfo = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
   const initialValues = {
@@ -22,12 +24,12 @@ const EditProfileForm = ({ children }) => {
   });
 
   const onSubmit = (values, actions) => {
-    dispatch(setAuthError(""));
+    setAuthErr("");
     if (
       values.username === userInfo.username &&
       values.email === userInfo.email
     ) {
-      dispatch(setAuthError("The values you entered already exist"));
+      setAuthErr("The values you entered already exist");
       actions.setSubmitting(false);
     } else {
       dispatch(
@@ -37,10 +39,12 @@ const EditProfileForm = ({ children }) => {
         })
       )
         .then(() => {
+          setAuthErr("");
           actions.setSubmitting(false);
           children.props.onClick();
         })
-        .catch(() => {
+        .catch((err) => {
+          setAuthErr(err);
           actions.setSubmitting(false);
         });
     }
@@ -48,7 +52,7 @@ const EditProfileForm = ({ children }) => {
 
   return (
     <>
-      {userInfo.authErr ? (
+      {authErr ? (
         <Alert
           severity="error"
           onClose={() => {
@@ -58,7 +62,7 @@ const EditProfileForm = ({ children }) => {
             marginBottom: "20px",
           }}
         >
-          {userInfo.authErr}
+          {authErr}
         </Alert>
       ) : null}
       <Formik

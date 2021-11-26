@@ -2,12 +2,9 @@ import { Grid, Button, Paper } from "@mui/material";
 import DisplayProfileInfo from "../layout/DisplayProfileInfo";
 import EditProfileForm from "../forms/EditProfileForm";
 import ChangePasswordForm from "../forms/ChangePasswordForm";
-import { useDispatch } from "react-redux";
-import { setAuthError } from "../redux/actions/userActions";
 import { useState } from "react";
 
 const Profile = () => {
-  const dispatch = useDispatch();
   const [isEditingPassword, setEditingPassword] = useState(false);
   const [isInfoEditing, setInfoEditing] = useState(false);
   const [isDeleteAccount, setDeleteAccount] = useState(false);
@@ -18,7 +15,6 @@ const Profile = () => {
         <ChangePasswordForm>
           <Button
             onClick={() => {
-              dispatch(setAuthError(""));
               setEditingPassword(false);
             }}
             variant="outlined"
@@ -37,7 +33,6 @@ const Profile = () => {
         <EditProfileForm>
           <Button
             onClick={() => {
-              dispatch(setAuthError(""));
               setInfoEditing(false);
             }}
             variant="outlined"
