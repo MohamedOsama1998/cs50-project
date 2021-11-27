@@ -51,10 +51,6 @@ export const loginUser = (payload) => async (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        dispatch({
-          type: actions.SET_AUTH_ERROR,
-          payload: err.response.data.message,
-        });
         reject(err.response.data.message);
       });
   });

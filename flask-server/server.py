@@ -191,27 +191,28 @@ def profile():
     userID = jwt.decode(
         token, app.config["SECRET_KEY"], algorithms=["HS256"])["userID"]
     user = db.execute("SELECT * FROM users WHERE id = ?", userID)[0]
-    userHash = user["password"]
-    if request.form.get("type") == "updateInfo":
-        username = request.form.get("username")
-        email = request.form.get("email")
-        currentPassword = request.form.get("currentPassword")
-        if check_password_hash(userHash, currentPassword):
-            db.execute("UPDATE users SET username = ?, email = ? WHERE id = ?",
-                       username, email, userID)
-            updatedUser = db.execute(
-                "SELECT * FROM users WHERE id = ?", userID)[0]
+    username = request.form.get("username")
+    email = request.form.get("email")
+    currentPassword = request.form.get("currentPassword")
+    if check_password_hash(user["password"], currentPassword):
+        if email != user["email"]:
+            if len(db.execute("SELECT * FROM users WHERE email = ?", email)) != 0:
+                return make_response({"message": "This E-mail address is already in use."}, 409)
+        db.execute("UPDATE users SET username = ?, email = ? WHERE id = ?",
+                   username, email, userID)
+        updatedUser = db.execute(
+            "SELECT * FROM users WHERE id = ?", userID)[0]
 
-            token = jwt.encode({"userID": userID, "email": updatedUser["email"], "username": updatedUser["username"], "exp": datetime.datetime.utcnow(
-            ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
-            res = make_response({"userID": userID,
-                                "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
-            res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
-            ) + datetime.timedelta(days=1))
+        token = jwt.encode({"userID": userID, "email": updatedUser["email"], "username": updatedUser["username"], "exp": datetime.datetime.utcnow(
+        ) + datetime.timedelta(hours=24)}, app.config["SECRET_KEY"])
+        res = make_response({"userID": userID,
+                            "username": updatedUser["username"], "email": updatedUser["email"]}, 201)
+        res.set_cookie("accessToken", value=token, max_age=datetime.timedelta(days=1), expires=datetime.datetime.utcnow(
+        ) + datetime.timedelta(days=1))
 
-            return res
-        else:
-            return make_response({"message": "The password you entered is incorrect."}, 409)
+        return res
+    else:
+        return make_response({"message": "The password you entered is incorrect."}, 409)
 
 # Change user password
 

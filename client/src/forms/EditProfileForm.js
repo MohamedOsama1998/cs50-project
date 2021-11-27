@@ -32,12 +32,7 @@ const EditProfileForm = ({ children }) => {
       setAuthErr("The values you entered already exist");
       actions.setSubmitting(false);
     } else {
-      dispatch(
-        updateUserInfo({
-          ...values,
-          type: "updateInfo",
-        })
-      )
+      dispatch(updateUserInfo(values))
         .then(() => {
           setAuthErr("");
           actions.setSubmitting(false);
