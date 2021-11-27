@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { updateUserInfo } from "../redux/actions/userActions";
+import { setSnackbar } from "../redux/actions/snackBarActions";
 import * as Yup from "yup";
 
 const EditProfileForm = ({ children }) => {
@@ -34,8 +35,14 @@ const EditProfileForm = ({ children }) => {
     } else {
       dispatch(updateUserInfo(values))
         .then(() => {
-          setAuthErr("");
           actions.setSubmitting(false);
+          dispatch(
+            setSnackbar({
+              isOpen: true,
+              text: "Your profile has been updated successfully.",
+              severity: "success",
+            })
+          );
           children.props.onClick();
         })
         .catch((err) => {

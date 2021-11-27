@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { updateTaskContents } from "../redux/actions/tasksActions";
+import { setSnackbar } from "../redux/actions/snackBarActions";
 import { useDispatch } from "react-redux";
 
 const EditTaskForm = ({ task, children }) => {
@@ -20,6 +21,13 @@ const EditTaskForm = ({ task, children }) => {
     dispatch(updateTaskContents({ ...values, taskID: task.taskID }))
       .then(() => {
         actions.setSubmitting(false);
+        dispatch(
+          setSnackbar({
+            isOpen: true,
+            text: "Your task has been updated successfully.",
+            severity: "success",
+          })
+        );
         children.props.onClick();
       })
       .catch((err) => {

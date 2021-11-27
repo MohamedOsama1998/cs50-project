@@ -12,6 +12,7 @@ import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "../redux/actions/tasksActions";
+import { setSnackbar } from "../redux/actions/snackBarActions";
 
 const DeleteTaskDialog = ({ taskID }) => {
   const [open, setOpen] = useState(false);
@@ -19,10 +20,21 @@ const DeleteTaskDialog = ({ taskID }) => {
   const dispatch = useDispatch();
   const handleDelete = () => {
     setLoading(true);
-    dispatch(deleteTask(taskID)).catch((err) => {
-      setLoading(false);
-      console.log(err);
-    });
+    dispatch(deleteTask(taskID))
+      .then(() => {
+        dispatch(
+          setSnackbar({
+            isOpen: true,
+            text: "The task you've chosen has been deleted.",
+            severity: "warning",
+          })
+        );
+      })
+
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
   return (
     <>

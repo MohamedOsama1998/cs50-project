@@ -1,5 +1,11 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
+import {
+  createTheme,
+  ThemeProvider,
+  CssBaseline,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchDarkmode } from "./redux/actions/themeAction";
@@ -16,13 +22,22 @@ import Land from "./pages/Land";
 import NotFound from "./pages/NotFound";
 import Tasks from "./pages/Tasks";
 import Profile from "./pages/Profile";
+import { actions } from "./redux/actionConstants";
 
 const App = () => {
   const dispatch = useDispatch();
   const isDarkmode = useSelector(({ theme }) => theme.isDarkmode);
   const isAuth = useSelector(({ auth }) => auth.isAuth);
+  const snackbar = useSelector(({ snackbar }) => snackbar);
   const darkTheme = createTheme({ palette: { mode: "dark" } });
   const lightTheme = createTheme({ palette: { mode: "light" } });
+
+  const handleSnackbarClose = () => {
+    dispatch({
+      type: actions.SET_SNACKBAR_PROPERTIES,
+      payload: { isOpen: false, text: "", severity: "" },
+    });
+  };
 
   useEffect(() => {
     dispatch(fetchDarkmode());
@@ -59,6 +74,21 @@ const App = () => {
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Snackbar
+            open={snackbar.isOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+            message={snackbar.text}
+            color="success"
+          >
+            <Alert
+              onClose={handleSnackbarClose}
+              severity={snackbar.severity || "success"}
+              sx={{ width: "100%" }}
+            >
+              {snackbar.text}
+            </Alert>
+          </Snackbar>
         </BrowserRouter>
       </CssBaseline>
     </ThemeProvider>

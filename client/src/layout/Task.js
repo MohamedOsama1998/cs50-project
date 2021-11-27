@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import DeleteTaskDialog from "./DeleteTaskDialog";
 import { useDispatch } from "react-redux";
 import { updateTaskStatus } from "../redux/actions/tasksActions";
+import { setSnackbar } from "../redux/actions/snackBarActions";
 import moment from "moment";
 import { useState } from "react";
 import EditTaskForm from "../forms/EditTaskForm";
@@ -21,7 +22,47 @@ const Task = ({ task }) => {
   const [isEditing, setEditing] = useState(false);
   const dispatch = useDispatch();
   const handleChange = (action) => {
-    const changeValue = action === "advance" ? 1 : -1;
+    let changeValue;
+    switch (action) {
+      case "advance":
+        changeValue = 1;
+        task.status === "0"
+          ? dispatch(
+              setSnackbar({
+                isOpen: true,
+                text: "This task is now in progress, Good luck!",
+                severity: "info",
+              })
+            )
+          : dispatch(
+              setSnackbar({
+                isOpen: true,
+                text: "You have completed this task! Good job!",
+                severity: "success",
+              })
+            );
+        break;
+      case "reverse":
+        changeValue = -1;
+        task.status === "1"
+          ? dispatch(
+              setSnackbar({
+                isOpen: true,
+                text: "This task is now pending.",
+                severity: "info",
+              })
+            )
+          : dispatch(
+              setSnackbar({
+                isOpen: true,
+                text: "Your task has been set to be in progress again!",
+                severity: "info",
+              })
+            );
+        break;
+      default:
+        break;
+    }
     dispatch(
       updateTaskStatus({
         taskID: task.taskID,

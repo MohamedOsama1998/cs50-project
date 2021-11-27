@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { updateUserPassword } from "../redux/actions/userActions";
+import { setSnackbar } from "../redux/actions/snackBarActions";
 import * as Yup from "yup";
 
 const ChangePasswordForm = ({ children }) => {
@@ -29,6 +30,13 @@ const ChangePasswordForm = ({ children }) => {
     dispatch(updateUserPassword(values))
       .then(() => {
         actions.setSubmitting(false);
+        dispatch(
+          setSnackbar({
+            isOpen: true,
+            text: "You password has been updated successfully.",
+            severity: "success",
+          })
+        );
         children.props.onClick();
       })
       .catch((err) => {

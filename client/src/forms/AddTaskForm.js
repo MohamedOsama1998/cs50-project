@@ -2,6 +2,7 @@ import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import { addTask } from "../redux/actions/tasksActions";
+import { setSnackbar } from "../redux/actions/snackBarActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -16,13 +17,21 @@ const AddTaskForm = ({ children }) => {
     text: Yup.string().required("Please enter task description"),
   });
 
-  const onSubmit = (values, actions) => {
+  const onSubmit = (values, { setSubmitting }) => {
     dispatch(addTask(values))
       .then(() => {
-        actions.setSubmitting(false);
+        setSubmitting(false);
+        dispatch(
+          setSnackbar({
+            isOpen: true,
+            text: "Your new task has been added successfully",
+            severity: "success",
+          })
+        );
         children.props.onClick();
       })
       .catch((err) => {
+        setSubmitting(false);
         console.log(err);
       });
   };
