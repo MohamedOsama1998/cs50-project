@@ -30,7 +30,7 @@ export const registerUser = (payload) => async (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        reject(err.response.data.message);
+        reject(err);
       });
   });
 };
@@ -51,7 +51,7 @@ export const loginUser = (payload) => async (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        reject(err.response.data.message);
+        reject(err);
       });
   });
 };
@@ -71,7 +71,7 @@ export const updateUserInfo = (data) => async (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        reject(err.response.data.message);
+        reject(err);
       });
   });
 };
@@ -87,7 +87,7 @@ export const updateUserPassword = (data) => (dispatch) => {
         resolve();
       })
       .catch((err) => {
-        reject(err.response.data.message);
+        reject(err);
       });
   });
 };
@@ -103,7 +103,7 @@ export const checkUserPassword = (password) => () => {
         resolve();
       })
       .catch((err) => {
-        reject(err.response.data.message);
+        reject(err);
       });
   });
 };

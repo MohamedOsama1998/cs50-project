@@ -2,11 +2,13 @@ import { TextField, Alert } from "@mui/material";
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { loginUser } from "../redux/actions/userActions";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [authErr, setAuthErr] = useState("");
   const dispatch = useDispatch();
   const initialValues = {
@@ -29,8 +31,12 @@ const LoginForm = () => {
         actions.setSubmitting(false);
       })
       .catch((err) => {
-        setAuthErr(err);
-        actions.setSubmitting(false);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          setAuthErr(err.response.data.message);
+          actions.setSubmitting(false);
+        }
       });
   };
 

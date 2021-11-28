@@ -2,11 +2,13 @@ import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useNavigate } from "react-router";
 import { updateTaskContents } from "../redux/actions/tasksActions";
 import { setSnackbar } from "../redux/actions/snackBarActions";
 import { useDispatch } from "react-redux";
 
 const EditTaskForm = ({ task, children }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const initialValues = {
     title: task.title,
@@ -31,8 +33,12 @@ const EditTaskForm = ({ task, children }) => {
         children.props.onClick();
       })
       .catch((err) => {
-        actions.setSubmitting(false);
-        console.log(err);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          actions.setSubmitting(false);
+          console.log(err);
+        }
       });
   };
 

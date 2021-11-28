@@ -3,10 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import { addTask } from "../redux/actions/tasksActions";
 import { setSnackbar } from "../redux/actions/snackBarActions";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 const AddTaskForm = ({ children }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const initialValues = {
     title: "",
@@ -31,8 +33,12 @@ const AddTaskForm = ({ children }) => {
         children.props.onClick();
       })
       .catch((err) => {
-        setSubmitting(false);
-        console.log(err);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          setSubmitting(false);
+          console.log(err);
+        }
       });
   };
 

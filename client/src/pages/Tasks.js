@@ -1,19 +1,23 @@
 import { Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { fetchTasks } from "../redux/actions/tasksActions";
 import Task from "../layout/Task";
 import AddTaskModal from "../layout/AddTaskModal";
 
 const Tasks = () => {
+  const navigate = useNavigate();
   const tasks = useSelector(({ tasks }) => tasks);
   const userInfo = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchTasks()).catch((err) => {
-      console.log(err.response.data);
+      if (err.response.status === 500) {
+        navigate("/error", { replace: true });
+      }
     });
-  }, [dispatch]);
+  }, [dispatch, navigate]);
   return (
     <>
       <Grid

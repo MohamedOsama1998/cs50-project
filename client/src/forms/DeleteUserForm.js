@@ -11,11 +11,13 @@ import {
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { useState } from "react";
 import { checkUserPassword, deleteUser } from "../redux/actions/userActions";
 import * as Yup from "yup";
 
 const DeleteUserForm = ({ children }) => {
+  const navigate = useNavigate();
   const [authErr, setAuthErr] = useState("");
   const [dialog, setDialog] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,8 +37,12 @@ const DeleteUserForm = ({ children }) => {
         actions.setSubmitting(false);
       })
       .catch((err) => {
-        actions.setSubmitting(false);
-        setAuthErr(err);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          actions.setSubmitting(false);
+          setAuthErr(err.response.data.message);
+        }
       });
   };
 

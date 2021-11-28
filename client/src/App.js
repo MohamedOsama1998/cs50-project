@@ -22,6 +22,7 @@ import Land from "./pages/Land";
 import NotFound from "./pages/NotFound";
 import Tasks from "./pages/Tasks";
 import Profile from "./pages/Profile";
+import ServerError from "./pages/ServerError";
 import { actions } from "./redux/actionConstants";
 
 const App = () => {
@@ -68,6 +69,7 @@ const App = () => {
               path="/profile"
               element={isAuth ? <Profile /> : <Navigate to="/login" replace />}
             />
+            <Route path="/error" element={<ServerError />} />
             <Route
               path="/tasks"
               element={isAuth ? <Tasks /> : <Navigate to="/login" replace />}

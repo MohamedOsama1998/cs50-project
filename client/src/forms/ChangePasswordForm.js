@@ -3,11 +3,13 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { updateUserPassword } from "../redux/actions/userActions";
 import { setSnackbar } from "../redux/actions/snackBarActions";
 import * as Yup from "yup";
 
 const ChangePasswordForm = ({ children }) => {
+  const navigate = useNavigate();
   const [authErr, setAuthErr] = useState("");
   const dispatch = useDispatch();
   const initialValues = {
@@ -40,8 +42,12 @@ const ChangePasswordForm = ({ children }) => {
         children.props.onClick();
       })
       .catch((err) => {
-        setAuthErr(err);
-        actions.setSubmitting(false);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          setAuthErr(err.response.data.message);
+          actions.setSubmitting(false);
+        }
       });
   };
 

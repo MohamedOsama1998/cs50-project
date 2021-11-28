@@ -9,12 +9,14 @@ import {
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import BackspaceIcon from "@mui/icons-material/Backspace";
+import { useNavigate } from "react-router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "../redux/actions/tasksActions";
 import { setSnackbar } from "../redux/actions/snackBarActions";
 
 const DeleteTaskDialog = ({ taskID }) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -30,10 +32,13 @@ const DeleteTaskDialog = ({ taskID }) => {
           })
         );
       })
-
       .catch((err) => {
-        setLoading(false);
-        console.log(err);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          setLoading(false);
+          console.log(err);
+        }
       });
   };
   return (

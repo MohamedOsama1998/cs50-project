@@ -13,12 +13,14 @@ import Typography from "@mui/material/Typography";
 import DeleteTaskDialog from "./DeleteTaskDialog";
 import { useDispatch } from "react-redux";
 import { updateTaskStatus } from "../redux/actions/tasksActions";
+import { useNavigate } from "react-router";
 import { setSnackbar } from "../redux/actions/snackBarActions";
 import moment from "moment";
 import { useState } from "react";
 import EditTaskForm from "../forms/EditTaskForm";
 
 const Task = ({ task }) => {
+  const navigate = useNavigate();
   const [isEditing, setEditing] = useState(false);
   const dispatch = useDispatch();
   const handleChange = (action) => {
@@ -68,7 +70,13 @@ const Task = ({ task }) => {
         taskID: task.taskID,
         status: parseInt(task.status) + changeValue,
       })
-    );
+    ).catch((err) => {
+      if (err.response.status === 500) {
+        navigate("/error", { replace: true });
+      } else {
+        console.log(err);
+      }
+    });
   };
   return (
     <Card style={{ marginTop: "15px", marginBottom: "15px", padding: "10px" }}>

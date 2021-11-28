@@ -3,10 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../redux/actions/userActions";
+import { useNavigate } from "react-router";
 import * as Yup from "yup";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [authErr, setAuthErr] = useState("");
   const dispatch = useDispatch();
   const initialValues = {
@@ -35,8 +37,12 @@ const RegisterForm = () => {
         actions.setSubmitting(false);
       })
       .catch((err) => {
-        setAuthErr(err);
-        actions.setSubmitting(false);
+        if (err.response.status === 500) {
+          navigate("/error", { replace: true });
+        } else {
+          setAuthErr(err.response.data.message);
+          actions.setSubmitting(false);
+        }
       });
   };
 
