@@ -1,24 +1,31 @@
 import { Button, IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { toggleDarkmode } from "../redux/actions/themeAction";
+import { useNavigate } from "react-router";
 
 const SignedOutLinks = () => {
+  const navigate = useNavigate();
   const isDarkmode = useSelector(({ theme }) => theme.isDarkmode);
   const themeDispatch = useDispatch();
   return (
     <>
-      <Button color="inherit">
-        <Link to="/register" className="link">
-          Register
-        </Link>
+      <Button
+        color="inherit"
+        onClick={() => {
+          navigate("/register");
+        }}
+      >
+        Register
       </Button>
-      <Button color="inherit">
-        <Link to="/login" className="link">
-          Login
-        </Link>
+      <Button
+        color="inherit"
+        onClick={() => {
+          navigate("/login");
+        }}
+      >
+        Login
       </Button>
       <IconButton
         color="inherit"

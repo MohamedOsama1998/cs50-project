@@ -1,11 +1,14 @@
 .link {
-  color: #fff;
   text-decoration: none;
+  color: inherit;
+}
+
+.link:hover {
+  text-decoration: underline;
 }
 
 .form {
   margin-top: 50px;
   margin-bottom: 50px;
   padding: 50px;
-  /* text-align: right; */
 }

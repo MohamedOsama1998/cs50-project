@@ -1,12 +1,12 @@
 import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import SignedOutLinks from "../links/SignedOutLinks";
 import SignedInLinks from "../links/SignedInLinks";
 
 const Header = () => {
   const isAuth = useSelector((state) => state.auth.isAuth);
-
+  const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -17,10 +17,11 @@ const Header = () => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={() => {
+              navigate("/");
+            }}
           >
-            <Link to="/" className="link">
-              SOLO
-            </Link>
+            STM
           </IconButton>
           <Typography
             variant="h6"
